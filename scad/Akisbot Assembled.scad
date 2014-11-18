@@ -1,21 +1,28 @@
 include <Akisbot.scad>
 
-//$fa = 1;
-//$fs = 1;
+$fa = 1;
+$fs = 1;
 
 // todo 257 = body height plus neck height
 head_offset_y = 257;
 
 translate([-body_width/2,body_depth/2,0]) rotate([90,0,0]) back();
 rotate([0,0,180]) translate([-body_width/2,body_depth/2,0]) rotate([90,0,0]) front();
-// todo
-translate([-67,-body_depth/2,158]) rotate([90,0,0]) nameplate();
+translate([-(body_width / 2 ) + nameplate_left, -( body_depth / 2 ), nameplate_top - nameplate_height]) rotate([90, 0, 0]) nameplate();
 
 // Neck and head
 translate([0,0, body_height - (joint_radius*2/3)]) rotate([0,90,0]) neck();
 // todo 257 = body height plus neck height
 translate([-head_width/2,head_depth/2,head_offset_y]) rotate([90,0,0]) head_back();
-rotate([0,0,180]) translate([-head_width/2,head_depth/2,head_offset_y]) rotate([90,0,0]) head_front();
+rotate([0,0,180]) translate([-head_width/2,head_depth/2,head_offset_y]) rotate([90,0,0]) union() {
+	head_front();
+
+	// Eye rings
+	translate([0, eye_offset_y, outer_eye_depth * -1]) union() {
+		translate([(head_width / 2) + eye_offset_x, 0, 0]) eye_ring();
+		translate([(head_width / 2) - eye_offset_x, 0, 0]) eye_ring();
+	};
+};
 
 // Upper arms
 translate([-(body_width / 2) + top_left+top_joint_x_offset,0,body_height-top_joint_y_offset]) upper_arm();

@@ -1,33 +1,65 @@
+/**
+ * General
+ */
 wall_thickness = 8;
-
 joint_radius = 24;
+peg_height_ratio = 1 / 8;
+peg_radius = wall_thickness / 4;
+peg_hole_radius = peg_radius * 1.25;
+peg_corner_offset = wall_thickness / 3 * 2;
 
+/**
+ * Body
+ */
 body_depth = 90;
 body_width = 250;
 body_height = 231;
 body_angle = 78.5;
-
-head_depth = 60;
-head_width = 226;
-head_height = 150;
-head_angle = 85;
 
 length_of_body_top = body_width - ( 2 * ( tan(90 - body_angle) * body_height ) );
 
 top_right = round(( (body_width - length_of_body_top) / 2 ) + length_of_body_top);
 top_left = round( ( body_width - length_of_body_top ) / 2 );
 
+vent_depth = wall_thickness * .25;
+vent_height = body_height * .14;
+vent_width = body_width *.22;
+nameplate_width = vent_width;
+nameplate_height = nameplate_width * .23;
+nameplate_depth = wall_thickness * .25;
+vent_count = 8;
+
+vent_left = top_left + ( length_of_body_top * .08 );
+vent_top = body_height * .9;
+
+nameplate_top = vent_top - vent_height -  (nameplate_height / 2 );
+nameplate_left = vent_left;
+
+/**
+ * Head
+ */
+head_depth = 60;
+head_width = 226;
+head_height = 150;
+head_angle = 85;
+
 length_of_head_top = head_width - ( 2 * ( tan(90 - head_angle) * head_height ) );
 
 head_top_right = round(( (head_width - length_of_head_top) / 2 ) + length_of_head_top);
 head_top_left = round( ( head_width - length_of_head_top ) / 2 );
 
+neck_length = 30;
+neck_girth = 16;
 
+/**
+ * Shoulders
+ */
 top_joint_x_offset = ( joint_radius + wall_thickness ) * sin(90 - body_angle);
 top_joint_y_offset = ( joint_radius + wall_thickness ) * cos(90 - body_angle);
 
-peg_height_ratio = 1 / 8;
-peg_radius = wall_thickness / 4;
+/**
+ * Face
+ */
 
 inner_eye_radius = 22;
 outer_eye_radius = 32;
@@ -37,6 +69,42 @@ outer_eye_depth = 6;
 
 eye_offset_x = head_width * 1 / 6;
 eye_offset_y = head_height * 2 / 3;
+
+pupil_width = inner_eye_radius * .45;
+
+/**
+ * Arms
+ */
+outer_arm_joint_height = 18;
+outer_arm_joint_radius = 15;
+
+forearm_radius = outer_arm_joint_height / 2;
+
+claw_radius_outer = 25;
+claw_radius_inner = 15;
+claw_opening_width = 8;
+claw_depth = forearm_radius * 2;
+forearm_length = 40;
+wrist_length = 25;
+wrist_radius = 5;
+
+outer_arm_joint_peg_radius = 4;
+
+inner_arm_joint_radius = 15;
+inner_arm_joint_height = 18;
+inner_arm_joint_bump_radius = outer_arm_joint_peg_radius;
+inner_arm_joint_bump_height = outer_arm_joint_height / 3 / 3;
+elbow_joint_ball_height = inner_arm_joint_height / 3 * .7;
+
+upper_arm_length = 70;
+upper_arm_girth = 16;
+
+/**
+ * Base
+ */
+axle_thickness = 20;
+wheel_width = 125;
+wheel_depth = 80;
 
 module antenna() {
 	color("gray") union() {
@@ -96,31 +164,54 @@ module body_side() {
 		// Right joint interior
 		translate([top_right-top_joint_x_offset,body_height - top_joint_y_offset,(body_depth/2)]) sphere(r=joint_radius);
 
-		linear_extrude((body_depth/2)) polygon([[0,0],[body_width,0],[body_width,-100],[0,-100]],[[0,1,2,3]]);
-		linear_extrude((body_depth/2)) polygon([[top_left,body_height],[top_right,body_height],[top_right,body_height+100],[top_left,body_height+100]],[[0,1,2,3]]);
-		linear_extrude((body_depth/2)) polygon([[0,0],[top_left,body_height],[top_left-100,body_height],[-100,0]],[[0,1,2,3]]);
-		linear_extrude((body_depth/2)) polygon([[body_width,0],[top_right,body_height],[top_right+100,body_height],[body_width+100,0]],[[0,1,2,3]]);
+		linear_extrude((body_depth/2)) polygon([[0,0],[body_width,0],[body_width,-(joint_radius+wall_thickness)],[0,-(joint_radius+wall_thickness)]],[[0,1,2,3]]);
+		linear_extrude((body_depth/2)) polygon([[top_left,body_height],[top_right,body_height],[top_right,body_height+(joint_radius+wall_thickness)],[top_left,body_height+(joint_radius+wall_thickness)]],[[0,1,2,3]]);
+		linear_extrude((body_depth/2)) polygon([[0,0],[top_left,body_height],[top_left-(joint_radius+wall_thickness),body_height],[-(joint_radius+wall_thickness),0]],[[0,1,2,3]]);
+		linear_extrude((body_depth/2)) polygon([[body_width,0],[top_right,body_height],[top_right+(joint_radius+wall_thickness),body_height],[body_width+(joint_radius+wall_thickness),0]],[[0,1,2,3]]);
 	}
 };
 
+/**
+ * The back of the robot body.
+ */
 module back() {
 	difference() {
 		body_side();
 
-		// Corner peg holes
-		translate([wall_thickness/3*2,wall_thickness/2, (body_depth/2)-(body_depth / 2 * peg_height_ratio*1.25)]) linear_extrude(body_depth / 2 * peg_height_ratio * 1.25) circle(r=peg_radius*1.25);
-		translate([body_width-(wall_thickness/3*2),wall_thickness/2, (body_depth/2)-(body_depth / 2 * peg_height_ratio*1.25)]) linear_extrude(body_depth / 2 * peg_height_ratio*1.25) circle(r=peg_radius*1.25);
-		translate([top_left+(wall_thickness/3*2),body_height-(wall_thickness/2), (body_depth/2)-(body_depth / 2 * peg_height_ratio*1.25)]) linear_extrude(body_depth / 2 * peg_height_ratio*1.25) circle(r=peg_radius*1.25);
-		translate([top_right-(wall_thickness/3*2),body_height-(wall_thickness/2), (body_depth/2)-(body_depth / 2 * peg_height_ratio*1.25)]) linear_extrude(body_depth / 2 * peg_height_ratio*1.25) circle(r=peg_radius*1.25);
-		
+		// Peg holes
+		translate([0, 0, (body_depth / 2) - (body_depth / 2 * peg_height_ratio * 1.25)]) linear_extrude(body_depth / 2 * peg_height_ratio * 1.25) union() {
+			translate([0, wall_thickness / 2, 0]) union() {
+				// Bottom holes.
+				translate([peg_corner_offset, 0, 0]) circle(r=peg_hole_radius);
+				translate([body_width - peg_corner_offset, 0, 0]) circle(r=peg_hole_radius);
+								translate([body_width / 2 - joint_radius - ( wall_thickness / 2 ), 0, 0]) circle(r=peg_hole_radius);
+								translate([body_width / 2 + joint_radius + ( wall_thickness / 2 ), 0, 0]) circle(r=peg_hole_radius);
+
+			};
+
+			translate([0, body_height - (wall_thickness / 2), 0]) union() {
+				// Top holes.
+				translate([top_left + peg_corner_offset, 0, 0]) circle(r=peg_hole_radius);
+				translate([top_right - peg_corner_offset, 0, 0]) circle(r=peg_hole_radius);
+								translate([body_width / 2 - joint_radius - ( wall_thickness / 2 ), 0, 0]) circle(r=peg_hole_radius);
+								translate([body_width / 2 + joint_radius + ( wall_thickness / 2 ), 0, 0]) circle(r=peg_hole_radius);
+						};
+						
+						translate([0, body_height / 2, 0]) union() {
+							// Side holes.
+							translate([(top_left + wall_thickness) / 2, 0, 0]) circle(r=peg_hole_radius);
+							translate([top_right + ( (body_width - top_right - wall_thickness ) / 2 ), 0, 0]) circle(r=peg_hole_radius);
+						};
+	   		};
 	};
 };
 
+/**
+ * The "leg" and treads.
+ *
+ * @todo Parameterize.
+ */
 module base() {
-	axle_thickness = 20;
-	wheel_width = 125;
-	wheel_depth = 80;
-
 	union() {
 		color( "green" ) rotate([0,180,0]) translate( [0,0,-40]) union() {
 			linear_extrude(60) rotate([0,90,0]) circle(r=joint_radius * 3 / 4);
@@ -137,68 +228,105 @@ module base() {
 	}
 };
 
+/**
+ * The button under the meter on his chest.
+ */
 module button() {
-	cube([24,14,6]);
+	cube([body_width *.1, body_height * .07, body_depth * 0.07]);
 };
 
+/**
+ * The inner portion of the eye.
+ */
 module eye() {
 	difference() {
-		color( "white" ) linear_extrude(inner_eye_depth) circle(r=inner_eye_radius*.95);
-		color( "black" ) translate([-inner_eye_depth,0,-2]) linear_extrude(20) square(10);
+		color( "white" ) cylinder(r=inner_eye_radius * .98, h=inner_eye_depth );
+		color( "black" ) cube([pupil_width,pupil_width,inner_eye_depth]);
 	}
 };
 
+/**
+ * From the elbow to the end of the claw.
+ */
 module forearm() {
-	color( "green" ) translate([0,0,-9]) union() {
-		translate([0,0,12]) outer_arm_joint();
+	color( "green" ) translate([0,0,-outer_arm_joint_height / 2]) union() {
+		// The outside circular joint pieces at the elbow.
+		difference() {
+			// The outer parts of the socket.
+			cylinder(r=outer_arm_joint_radius, h=outer_arm_joint_height);
+		
+			// The opening for elbow_joint_ball.
+			translate([0,0,outer_arm_joint_height / 3]) cylinder(r=outer_arm_joint_radius, h=outer_arm_joint_height / 3);
+		
+			// The center hole for the pegs.
+			cylinder(r=outer_arm_joint_peg_radius, h=outer_arm_joint_height);
+		};
 
-		translate([0,0,6]) rotate([180,0,0]) outer_arm_joint();
-
-		translate([0,0,9]) rotate([90,0,0]) difference() {
-			linear_extrude(40) circle(r=9);
-			translate([0,9,0]) rotate([90,0,0]) linear_extrude(18) circle(r=15);
+		// The thicker part of the forearm.
+		translate([0,0,outer_arm_joint_height / 2]) rotate([90,0,0]) difference() {
+			cylinder(r=forearm_radius, h=forearm_length);
+			translate([0,outer_arm_joint_height / 2,0]) rotate([90,0,0]) cylinder(r=outer_arm_joint_radius, h=outer_arm_joint_height);
 		}
 
-		translate([0,-40,9]) rotate([90,0,0]) linear_extrude(25) circle(r=5);
+		// The thinner part of the forearm.
+		translate([0,-(forearm_length),outer_arm_joint_height / 2]) rotate([90,0,0]) cylinder(r=wrist_radius, h=wrist_length);
 
-		translate([0,-85,0]) linear_extrude(joint_radius) rotate([180,0,0])
+		// The claw.
+		translate([0,-(forearm_length+wrist_length+outer_arm_joint_radius+((claw_radius_outer-claw_radius_inner)*.75)),(outer_arm_joint_height / 2) - (claw_depth / 2 )]) linear_extrude(claw_depth) rotate([180,0,0])
 		difference() {
 			difference() {
-				circle(r=25);
-				circle(r=15);
+				circle(r=claw_radius_outer);
+				circle(r=claw_radius_inner);
 			}
-			translate([-4,0,0]) square([8,50]);
+			translate([-claw_opening_width/2,0,0]) square([claw_opening_width,claw_radius_outer]);
 		}
 	}
 };
 
-module outer_arm_joint() {
-	color( "green" ) difference() {
-		linear_extrude(6) circle(r=15);
-		linear_extrude(2) circle(r=4);
-	}
-};
-
+/**
+ * The front of his body.
+ */
 module front() {
+	individual_vent_width = (vent_width / ((vent_count * 2) - 1 ));
+	peg_height = (body_depth / 2 * peg_height_ratio);
+
 	difference() {
 		color( "green" ) body_side();
-		color( "black" ) translate([132,176,0]) cube([4,30,2]);
-		color( "black" ) translate([140,176,0]) cube([4,30,2]);
-		color( "black" ) translate([148,176,0]) cube([4,30,2]);
-		color( "black" ) translate([156,176,0]) cube([4,30,2]);
-		color( "black" ) translate([164,176,0]) cube([4,30,2]);
-		color( "black" ) translate([172,176,0]) cube([4,30,2]);
-		color( "black" ) translate([180,176,0]) cube([4,30,2]);
-		color( "black" ) translate([188,176,0]) cube([4,30,2]);
+
+		/**
+		 * The vent.
+		 */
+		color( "black" ) translate([body_width - vent_left - vent_width,vent_top - vent_height,0]) union() {
+			for ( i = [0 : vent_count - 1] ) {
+				translate([i * individual_vent_width * 2, 0, 0]) cube([individual_vent_width,vent_height,vent_depth]);
+			};
+		};
 	};
 
-	
+	// Corner pegs
+	translate([0, 0, body_depth / 2]) union() {
+		translate([0, wall_thickness / 2, 0]) union() {
+			// Bottom pegs.
+			translate([peg_corner_offset, 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
+			translate([body_width-peg_corner_offset, 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
+						translate([body_width / 2 - joint_radius - ( wall_thickness / 2 ), 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
+						translate([body_width / 2 + joint_radius + ( wall_thickness / 2 ), 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
+		};
 
-	// Corner peg holes
-	translate([wall_thickness/3*2,wall_thickness/2, body_depth / 2]) linear_extrude(body_depth / 2 * peg_height_ratio) circle(r=peg_radius);
-	translate([body_width-(wall_thickness/3*2),wall_thickness/2, body_depth / 2]) linear_extrude(body_depth / 2 * peg_height_ratio) circle(r=peg_radius);
-	translate([top_left+(wall_thickness/3*2),body_height-(wall_thickness/2), body_depth / 2]) linear_extrude(body_depth / 2 * peg_height_ratio) circle(r=peg_radius);
-	translate([top_right-(wall_thickness/3*2),body_height-(wall_thickness/2), body_depth / 2]) linear_extrude(body_depth / 2 * peg_height_ratio) circle(r=peg_radius);
+		translate([0, body_height - (wall_thickness / 2), 0]) union() {
+			// Top pegs.
+			translate([top_left+peg_corner_offset, 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
+			translate([top_right-peg_corner_offset, 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
+						translate([body_width / 2 - joint_radius - ( wall_thickness / 2 ), 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
+						translate([body_width / 2 + joint_radius + ( wall_thickness / 2 ), 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
+
+		};
+				translate([0, body_height / 2, 0]) union() {
+					   // Side holes.
+					   translate([(top_left + wall_thickness) / 2, 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
+					   translate([top_right + ( (body_width - top_right - wall_thickness ) / 2 ), 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
+				};
+	};
 };
 
 module head_side() {
@@ -241,14 +369,25 @@ module head_side() {
 };
 
 module head_back() {
+	peg_height = (head_depth / 2 * peg_height_ratio);
+
 	union() {
 		head_side();
 
 		// Corner pegs
-		translate([wall_thickness/3*2,wall_thickness/2, head_depth / 2]) linear_extrude(head_depth / 2 * peg_height_ratio) circle(r=peg_radius);
-		translate([head_width-(wall_thickness/3*2),wall_thickness/2, head_depth / 2]) linear_extrude(head_depth / 2 * peg_height_ratio) circle(r=peg_radius);
-		translate([head_top_left+(wall_thickness/3*2),head_height-(wall_thickness/2), head_depth / 2]) linear_extrude(head_depth / 2 * peg_height_ratio) circle(r=peg_radius);
-		translate([head_top_right-(wall_thickness/3*2),head_height-(wall_thickness/2), head_depth / 2]) linear_extrude(head_depth / 2 * peg_height_ratio) circle(r=peg_radius);
+		translate([0, 0, head_depth / 2]) union() {
+			translate([0, wall_thickness / 2, 0]) union() {
+				// Bottom pegs.
+				translate([peg_corner_offset, 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
+				translate([head_width-peg_corner_offset, 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
+			};
+	
+			translate([0, head_height - (wall_thickness / 2), 0]) union() {
+				// Top pegs.
+				translate([head_top_left+peg_corner_offset, 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
+				translate([head_top_right-peg_corner_offset, 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
+			};
+		};	
 	};		
 };
 
@@ -284,18 +423,8 @@ module head_front() {
 				);
 			};
 	
-			// Eye rings
-			color( "green" ) translate([0, eye_offset_y, outer_eye_depth * -1]) union() {
-				translate([(head_width / 2) + eye_offset_x, 0, 0]) linear_extrude(outer_eye_depth) difference() {
-					circle(r=outer_eye_radius);
-					circle(r=inner_eye_radius);
-				};
-	
-				translate([(head_width / 2) - eye_offset_x, 0, 0]) linear_extrude(outer_eye_depth) difference() {
-					circle(r=outer_eye_radius);
-					circle(r=inner_eye_radius);
-				};
-			};
+			/*
+
 	
 			color( "white" ) translate([0,0,-wall_thickness / 4]) linear_extrude(wall_thickness / 4) union() {
 				// Todo These percentages for x offset should be calculated using trig based on the had angle.
@@ -305,6 +434,7 @@ module head_front() {
 				translate([head_width * 0.95, .32*head_height, 0]) circle(r=.0125 * head_width);
 				translate([head_width * 0.94, .47*head_height, 0]) circle(r=.0125 * head_width);	
 			};
+			*/
 		};
 
 		// Corner peg holes
@@ -314,6 +444,14 @@ module head_front() {
 			translate([head_top_left + (wall_thickness / 3 * 2), head_height - (wall_thickness / 2), 0]) circle(r=peg_radius * 1.25);
 			translate([head_top_right - (wall_thickness / 3 * 2), head_height - (wall_thickness / 2), 0]) circle(r=peg_radius * 1.25);
 		};
+	};
+};
+
+module eye_ring() {
+	// Eye rings
+	color( "green" ) linear_extrude(outer_eye_depth) difference() {
+		circle(r=outer_eye_radius);
+		circle(r=inner_eye_radius);
 	};
 };
 
@@ -338,90 +476,40 @@ module meter() {
 };
 
 module nameplate() {
-	union() {
-		color( "darkgreen" ) linear_extrude(2) square([60,13]);
+	resize(newsize=[nameplate_width,nameplate_height,nameplate_depth]) union() {
+		color( "darkgreen" ) linear_extrude(3) square([60,13]);
 
-		color( "white" ) union() {
-			// A
-			translate([9,3,2]) linear_extrude(1) square([1,7]);
-			translate([13,3,2]) linear_extrude(1) square([1,7]);
-	
-			translate([10,9,2]) linear_extrude(1) square([3,1]);
-			translate([10,6,2]) linear_extrude(1) square([3,1]);
-	
-			// K
-			translate([16,3,2]) linear_extrude(1) square([1,7]);
-	
-			translate([0,0,2]) linear_extrude(1) polygon([[17,5],[19,3], [20,3], [20,4.5], [17.5,6.5], [20,8.5],[20,10],[19,10],[17,8]], [[0,1,2,3,4,5,6,7,8]]);
-	
-			// I
-			translate([22,3,2]) linear_extrude(1) square([1,7]);
-	
-			// S
-			translate([25,6,2]) linear_extrude(1) square([1,3]);
-			translate([29,4,2]) linear_extrude(1) square([1,3]);
-	
-			translate([25,9,2]) linear_extrude(1) square([5,1]);
-			translate([26,6,2]) linear_extrude(1) square([3,1]);
-			translate([25,3,2]) linear_extrude(1) square([5,1]);
-	
-			// B
-			translate([32,3,2]) linear_extrude(1) square([1,7]);
-			translate([36,3,2]) linear_extrude(1) square([1,7]);
-	
-			translate([33,9,2]) linear_extrude(1) square([3,1]);
-			translate([33,6,2]) linear_extrude(1) square([3,1]);
-			translate([33,3,2]) linear_extrude(1) square([3,1]);
-	
-			// O
-			translate([39,3,2]) linear_extrude(1) square([1,7]);
-			translate([43,3,2]) linear_extrude(1) square([1,7]);
-	
-			translate([40,9,2]) linear_extrude(1) square([3,1]);
-			translate([40,3,2]) linear_extrude(1) square([3,1]);
-	
-			// T
-			translate([48,3,2]) linear_extrude(1) square([1,7]);
-			translate([46,9,2]) linear_extrude(1) square([5,1]);
-		}
+		color( "white" ) translate([9,3,2])  linear_extrude(2) text(text="AKISBOT", size=7);
 	}
 };
 
 module neck() {
-	neck_length = 25;
-	neck_girth = 16;
-
-	translate([-neck_length,0,0]) union() {
+	color( "green" ) translate([-neck_length,0,0]) union() {
 		translate([-neck_length/2,0,0]) rotate([0,90,0]) linear_extrude(neck_length) circle(r=neck_girth / 2);
 
 		difference() {
-			translate([neck_length,0,0]) sphere(r=joint_radius*.95);
+			translate([neck_length,0,0]) sphere(r=joint_radius);
 			translate([neck_length+(joint_radius*5/3),0,0]) cube([joint_radius*2, joint_radius*2, joint_radius*2],true);
 		};
 
 		mirror([1,0,0]) difference() {
-			translate([neck_length,0,0]) sphere(r=joint_radius*.95);
+			translate([neck_length,0,0]) sphere(r=joint_radius);
 			translate([neck_length+(joint_radius*5/3),0,0]) cube([joint_radius*2, joint_radius*2, joint_radius*2],true);
 		};
 	};
 };
 
-inner_arm_joint_radius = 15;
-inner_arm_joint_height = 18;
-inner_arm_joint_bump_radius = 3.5;
-inner_arm_joint_bump_height = 2;
+module elbow_joint_ball() {
+	translate([0,0,-elbow_joint_ball_height/2]) union() {
+		// The "ball."
+		cylinder(r=inner_arm_joint_radius, h=elbow_joint_ball_height);
 
-upper_arm_length = 70;
-upper_arm_girth = 16;
+		// The bottom peg.
+		translate([0,0,-inner_arm_joint_bump_height]) cylinder(h=inner_arm_joint_bump_height, r2=inner_arm_joint_bump_radius, r1 = inner_arm_joint_bump_radius / 2 );
 
-module inner_arm_joint() {
-	translate([0,0,-inner_arm_joint_height/3/2]) union() {
-		linear_extrude(inner_arm_joint_height/3) circle(r=inner_arm_joint_radius);
-		translate([0,0,inner_arm_joint_height/3])
-			linear_extrude(inner_arm_joint_bump_height) circle(r=inner_arm_joint_bump_radius);
-		translate([0,0,-inner_arm_joint_bump_height])
-			linear_extrude(inner_arm_joint_bump_height) circle(r=inner_arm_joint_bump_radius);
-	}
+		// The top peg.
+		translate([0,0,elbow_joint_ball_height]) cylinder(h=inner_arm_joint_bump_height, r1=inner_arm_joint_bump_radius, r2 = inner_arm_joint_bump_radius / 2 );
+	};
 };
 
 module upper_arm() {
@@ -436,13 +524,13 @@ module upper_arm() {
 			translate([-(upper_arm_length+joint_radius),0,-inner_arm_joint_height/2]) linear_extrude(inner_arm_joint_height) circle(r=inner_arm_joint_radius);
 		};
 	
-		translate([-(upper_arm_length+joint_radius),0,0]) inner_arm_joint();
+		translate([-(upper_arm_length+joint_radius),0,0]) elbow_joint_ball();
 	}
 };
 
 module treads() {
-	color( "gray" ) translate([100,0,0]) scale(3) translate([-5,-36.5,-2.5]) rotate([90,0,90]) import("Tread Brace.stl");
-	color( "gray" ) translate([-100,0,0]) scale(3) translate([0,-1.5,0]) rotate([0,0,180]) translate([-5,-36.5,-2.5]) rotate([90,0,90]) import("Tread Brace.stl");
+	color( "gray" ) translate([100,0,0]) scale(3) translate([-5,-36.5,-2.5]) rotate([90,0,90]) import("../inc/Tread Brace.stl");
+	color( "gray" ) translate([-100,0,0]) scale(3) translate([0,-1.5,0]) rotate([0,0,180]) translate([-5,-36.5,-2.5]) rotate([90,0,90]) import("../inc/Tread Brace.stl");
 
 	translate([-102,90,0]) wheel();
 	translate([-102,-90,0]) wheel();
@@ -454,9 +542,9 @@ module treads() {
 }
 
 module wheel() {
-	color( "gray" ) translate([-42,-6,-32])  rotate([0,0,-30]) scale(3) import( "Tread Wheel.stl" );
+	color( "gray" ) translate([-42,-6,-32])  rotate([0,0,-30]) scale(3) import( "../inc/Tread Wheel.stl" );
 }
 
 module crawler() {
-	translate([27.5,180,182]) rotate( [90, 0,90]) scale(3) import( "Treads.stl" );
+	translate([27.5,180,182]) rotate( [90, 0,90]) scale(3) import( "../inc/Treads.stl" );
 }
