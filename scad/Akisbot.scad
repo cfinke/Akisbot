@@ -534,8 +534,8 @@ module upper_arm() {
 };
 
 module treads() {
-	color( "gray" ) translate([100,0,0]) scale(3) translate([-5,-36.5,-2.5]) rotate([90,0,90]) import("../inc/Tread Brace.stl");
-	color( "gray" ) translate([-100,0,0]) scale(3) translate([0,-1.5,0]) rotate([0,0,180]) translate([-5,-36.5,-2.5]) rotate([90,0,90]) import("../inc/Tread Brace.stl");
+	color( "gray" ) translate([100,0,0]) tread_brace();
+	color( "gray" ) mirror([1,0,0]) translate([100,0,0]) tread_brace();
 
 	translate([-102,90,0]) wheel();
 	translate([-102,-90,0]) wheel();
@@ -545,6 +545,10 @@ module treads() {
 	color( "black") translate([-102,0,0]) crawler();
 	color( "black") translate([102,0,0]) crawler();
 }
+
+module tread_brace() {
+    	color( "gray" ) scale(3) translate([-5,-36.5,-2.5]) rotate([90,0,90]) import("../inc/Tread Brace.stl");
+};
 
 module wheel() {
 	color( "gray" ) translate([-42,-6,-32])  rotate([0,0,-30]) scale(3) import( "../inc/Tread Wheel.stl" );
