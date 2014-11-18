@@ -51,6 +51,11 @@ head_top_left = round( ( head_width - length_of_head_top ) / 2 );
 neck_length = 30;
 neck_girth = 16;
 
+antenna_length = head_width * 0.22;
+antenna_girth = 6;
+antenna_ball_radius = 8;
+antenna_base_radius = head_depth / 2;
+
 /**
  * Shoulders
  */
@@ -107,17 +112,17 @@ wheel_width = 125;
 wheel_depth = 80;
 
 module antenna() {
-	color("gray") union() {
-		translate([18,0,0])
-			difference() {
-				sphere(r=28);
-				translate([-13,-50,-50]) cube([100,100,100]);
-			};
-
-		translate([-8,0,0]) rotate([0,270,0]) linear_extrude(22) circle(r=2);
-
-		translate([-30,0,0]) sphere(r=8);
-	}
+    color( "gray" ) union() {
+        translate([0, 0, -antenna_base_radius * 0.5]) difference() {
+            sphere(r=antenna_base_radius);
+            translate([0, 0, -antenna_base_radius * 0.5]) cube(antenna_base_radius * 2, true);
+        };
+        
+        // Stop short of the full length so that the cylinder doesn't pole through the top of the ball.
+        cylinder(r=antenna_girth / 2, h=antenna_length - (antenna_ball_radius / 2));
+        
+        translate([0, 0, antenna_length - antenna_ball_radius]) sphere(r=antenna_ball_radius);
+    };
 };
 
 module body_side() {

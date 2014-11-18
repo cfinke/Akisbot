@@ -34,8 +34,8 @@ mirror([1,0,0]) translate([-(body_width / 2) + top_left+top_joint_x_offset-upper
 
 translate([0,0,-28]) base();
 
-translate([-105,0,375]) antenna();
-translate([105,0,375]) rotate([0,0,180]) antenna();
+translate([-(head_width / 2) + head_top_left, 0, body_height + head_height - (antenna_base_radius / 2)]) rotate([0,270,0]) antenna();
+mirror([1,0,0]) translate([-(head_width / 2) + head_top_left, 0, body_height + head_height - (antenna_base_radius / 2)]) rotate([0,270,0]) antenna();
 
 translate([-eye_offset_x,-(head_depth / 2)-inner_eye_depth,head_offset_y+eye_offset_y]) rotate([270,0,0]) eye();
 translate([eye_offset_x,-(head_depth / 2)-inner_eye_depth,head_offset_y+eye_offset_y]) rotate([270,0,0]) eye();
