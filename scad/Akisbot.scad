@@ -49,7 +49,7 @@ head_top_right = round(( (head_width - length_of_head_top) / 2 ) + length_of_hea
 head_top_left = round( ( head_width - length_of_head_top ) / 2 );
 
 neck_length = 30;
-neck_girth = 16;
+neck_girth = 20;
 
 antenna_length = head_width * 0.22;
 antenna_girth = 6;
