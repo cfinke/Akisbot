@@ -3,6 +3,7 @@
  */
 wall_thickness = 8;
 joint_radius = 24;
+joint_ball_radius = 23.5;
 peg_height_ratio = 1 / 8;
 peg_radius = wall_thickness / 4;
 peg_hole_radius = peg_radius * 1.25;
@@ -48,7 +49,7 @@ length_of_head_top = head_width - ( 2 * ( tan(90 - head_angle) * head_height ) )
 head_top_right = round(( (head_width - length_of_head_top) / 2 ) + length_of_head_top);
 head_top_left = round( ( head_width - length_of_head_top ) / 2 );
 
-neck_length = 30;
+neck_length = 60;
 neck_girth = 20;
 
 antenna_length = head_width * 0.22;
@@ -107,9 +108,11 @@ upper_arm_girth = 16;
 /**
  * Base
  */
-axle_thickness = 20;
+wheel_gap = body_width * 0.8;
 wheel_width = 125;
 wheel_depth = 80;
+base_depth = body_depth * 0.5;
+base_height = 60;
 
 module antenna() {
     color( "gray" ) union() {
@@ -212,25 +215,16 @@ module back() {
 };
 
 /**
- * The "leg" and treads.
- *
- * @todo Parameterize.
+ * The "leg".
  */
 module base() {
-	union() {
-		color( "green" ) rotate([0,180,0]) translate( [0,0,-40]) union() {
-			linear_extrude(60) rotate([0,90,0]) circle(r=joint_radius * 3 / 4);
-
-			difference() {
-				sphere(r=joint_radius);
-				translate( [0,0,-joint_radius*3/2]) cube([joint_radius*2,joint_radius*2,joint_radius*2], true);
-			}
-		};
-
-		translate( [0,0,-20]) treads();
-
-		translate( [0,0,-20]) color( "green" ) rotate([0,-90,90]) rotate([90,0,90]) translate([0,0,-axle_thickness/2]) translate([0,0,-10])linear_extrude(40) square([202,wheel_depth], true);
-	}
+    cube([wheel_gap, wheel_depth, base_depth], true );
+    cylinder(r=joint_radius * 3 / 4, h=base_height);
+    
+    translate([0, 0, base_height]) difference() {
+        sphere(r=joint_ball_radius);
+        translate([0, 0, joint_ball_radius / 2 * 3]) cube(joint_ball_radius * 2, true);
+    };
 };
 
 /**
@@ -489,19 +483,17 @@ module nameplate() {
 };
 
 module neck() {
-	color( "green" ) translate([-neck_length,0,0]) union() {
-		translate([-neck_length/2,0,0]) rotate([0,90,0]) linear_extrude(neck_length) circle(r=neck_girth / 2);
+    translate([neck_length / 2, 0, 0]) difference() {
+        sphere(r=joint_ball_radius);
+        translate([( joint_ball_radius * 5 / 3 ), 0, 0]) cube(joint_ball_radius * 2, true);
+    };
 
-		difference() {
-			translate([neck_length,0,0]) sphere(r=joint_radius);
-			translate([neck_length+(joint_radius*5/3),0,0]) cube([joint_radius*2, joint_radius*2, joint_radius*2],true);
-		};
-
-		mirror([1,0,0]) difference() {
-			translate([neck_length,0,0]) sphere(r=joint_radius);
-			translate([neck_length+(joint_radius*5/3),0,0]) cube([joint_radius*2, joint_radius*2, joint_radius*2],true);
-		};
-	};
+    mirror([1,0,0]) translate([neck_length / 2, 0, 0]) difference() {
+        sphere(r=joint_ball_radius);
+        translate([( joint_ball_radius * 5 / 3 ), 0, 0]) cube(joint_ball_radius * 2, true);
+    };
+    
+    rotate([0, 90, 0]) translate([0, 0, -(neck_length / 2)]) cylinder(r=neck_girth / 2, h=neck_length);
 };
 
 module elbow_joint_ball() {
@@ -520,7 +512,7 @@ module elbow_joint_ball() {
 module upper_arm() {
 	color( "green" ) union() {
 		difference() {
-			sphere(r=joint_radius);
+			sphere(r=joint_ball_radius);
 			translate([(joint_radius*5/3),0,0]) cube([joint_radius*2, joint_radius*2, joint_radius*2],true);
 		};
 	
@@ -533,27 +525,29 @@ module upper_arm() {
 	}
 };
 
-module treads() {
-	color( "gray" ) translate([100,0,0]) tread_brace();
-	color( "gray" ) mirror([1,0,0]) translate([100,0,0]) tread_brace();
-
-	translate([-102,90,0]) wheel();
-	translate([-102,-90,0]) wheel();
-	translate([102,90,0]) rotate([0,0,180]) wheel();
-	translate([102,-90,0]) rotate([0,0,180]) wheel();
-
-	color( "black") translate([-102,0,0]) crawler();
-	color( "black") translate([102,0,0]) crawler();
-}
-
+/**
+ * The brace that holds the wheels.
+ * @see http://www.thingiverse.com/thing:332816/
+ */
 module tread_brace() {
-    	color( "gray" ) scale(3) translate([-5,-36.5,-2.5]) rotate([90,0,90]) import("../inc/Tread Brace.stl");
+    // The wheels are rotated [-90º, 0, -90º] in the STL and are off-center by [15, 109.5, 7.5] (after scaling).
+    color( "green" ) translate([-15, -109.5, -7.5]) scale(3) rotate([90, 0, 90]) import("../inc/Tread Brace.stl");
 };
 
+/**
+ * The wheel that drives the crawlers.
+ * @see http://www.thingiverse.com/thing:332816/
+ */
 module wheel() {
-	color( "gray" ) translate([-42,-6,-32])  rotate([0,0,-30]) scale(3) import( "../inc/Tread Wheel.stl" );
+    // The wheels are rotated 30º in the STL and are off-center by [42, 6, 32] (after scaling).
+    color( "gray" ) translate([-42, -6, -32]) scale(3) rotate([0, 0, -30]) import( "../inc/Tread Wheel.stl" );
 }
 
+/**
+ * The rubber part of the treads.
+ * @see http://www.thingiverse.com/thing:332816/
+ */
 module crawler() {
-	translate([27.5,180,182]) rotate( [90, 0,90]) scale(3) import( "../inc/Treads.stl" );
+    // The crawlers are rotated [-90º, 0, -90º] in the STL and are off-center by [27.5, 180, 182] (after scaling).
+    color( "black" ) translate([27.5, 180, 182]) rotate([90, 0, 90]) scale(3) import( "../inc/Treads.stl" );
 }

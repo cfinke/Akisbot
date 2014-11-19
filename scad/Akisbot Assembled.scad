@@ -32,7 +32,26 @@ mirror([1,0,0]) translate([-(body_width / 2) + top_left+top_joint_x_offset,0,bod
 translate([-(body_width / 2) + top_left+top_joint_x_offset-upper_arm_length-joint_radius,0,body_height-top_joint_y_offset]) forearm();
 mirror([1,0,0]) translate([-(body_width / 2) + top_left+top_joint_x_offset-upper_arm_length-joint_radius,0,body_height-top_joint_y_offset]) forearm();
 
-translate([0,0,-28]) base();
+color( "green" ) translate([0,0,-base_height + ( joint_radius * 1 / 3 )]) base();
+
+translate([0,0,-base_height + ( joint_radius * 1 / 3 )]) union() {
+	color( "green" ) union() {
+            translate([wheel_gap / 2,0,0]) tread_brace();
+            mirror([1,0,0]) translate([wheel_gap / 2,0,0]) tread_brace();
+        };
+
+	color( "gray" ) union() {
+            translate([-wheel_gap / 2,90,0]) wheel();
+            translate([-wheel_gap / 2,-90,0]) wheel();
+            translate([wheel_gap / 2,90,0]) rotate([0,0,180]) wheel();
+            translate([wheel_gap / 2,-90,0]) rotate([0,0,180]) wheel();
+        };
+
+	color( "black") union() {
+            translate([-wheel_gap / 2,0,0]) crawler();
+            translate([wheel_gap / 2,0,0]) crawler();
+        };
+};
 
 translate([-(head_width / 2) + head_top_left, 0, body_height + head_height - (antenna_base_radius / 2)]) rotate([0,270,0]) antenna();
 mirror([1,0,0]) translate([-(head_width / 2) + head_top_left, 0, body_height + head_height - (antenna_base_radius / 2)]) rotate([0,270,0]) antenna();
