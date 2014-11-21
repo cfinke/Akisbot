@@ -218,15 +218,29 @@ module back() {
  * The "leg".
  */
 module base() {
-    cube([wheel_gap, wheel_depth, base_depth], true );
-    cylinder(r=joint_radius * 3 / 4, h=base_height);
-    
-    translate([0, 0, base_height]) difference() {
-        sphere(r=joint_ball_radius);
-        translate([0, 0, joint_ball_radius / 2 * 3]) cube(joint_ball_radius * 2, true);
-    };
-};
+	middle_bar_width = joint_radius * 3 / 4 * 3;
+	hole_width = ( wheel_gap - middle_bar_width - ( wall_thickness * 2 ) ) / 2;
 
+	difference() {
+		cube([wheel_gap, wheel_depth, base_depth], true );
+		cube([wheel_gap - (wall_thickness * 2), wheel_depth - (wall_thickness * 2), base_depth], true );
+	};
+
+	cube([joint_radius * 3 / 4 * 3, wheel_depth, base_depth], true );
+
+	cylinder(r=joint_radius * 3 / 4, h=base_height);
+
+	translate([0, 0, base_height]) difference() {
+		sphere(r=joint_ball_radius);
+		translate([0, 0, joint_ball_radius / 2 * 3]) cube(joint_ball_radius * 2, true);
+	};
+
+	// The "A" logos.
+	translate([0, 0, -base_depth / 2]) linear_extrude(base_depth) union() {
+		translate([ ( middle_bar_width / 2 ) + ( hole_width / 2 ), -( wheel_depth )  / 2, 0]) scale(0.75) translate([-60,0,0]) import ("../inc/A.dxf");
+		rotate([0,0,180]) translate([ ( middle_bar_width / 2 ) + ( hole_width / 2 ), -( wheel_depth )  / 2, 0]) scale(0.75) translate([-60,0,0]) import ("../inc/A.dxf");
+	};
+};
 /**
  * The button under the meter on his chest.
  */
