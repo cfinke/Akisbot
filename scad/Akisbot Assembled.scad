@@ -1,7 +1,5 @@
 include <Akisbot.scad>
 
-$fa = 1;
-$fs = 1;
 
 // todo 257 = body height plus neck height
 head_offset_y = 257;

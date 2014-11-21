@@ -486,7 +486,7 @@ module nameplate() {
 	resize(newsize=[nameplate_width,nameplate_height,nameplate_depth]) union() {
 		color( "darkgreen" ) linear_extrude(3) square([60,13]);
 
-		color( "white" ) translate([9,3,2])  linear_extrude(2) text(text="AKISBOT", size=7);
+		color( "white" ) translate([9,3,2])  linear_extrude(4) text(text="AKISBOT", size=7);
 	}
 };
 
