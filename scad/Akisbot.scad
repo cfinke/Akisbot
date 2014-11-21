@@ -81,7 +81,12 @@ pupil_width = inner_eye_radius * .45;
 /**
  * Arms
  */
-outer_arm_joint_height = 18;
+
+
+upper_arm_length = 70;
+upper_arm_girth = 20;
+
+outer_arm_joint_height = upper_arm_girth;
 outer_arm_joint_radius = 15;
 
 forearm_radius = outer_arm_joint_height / 2;
@@ -97,13 +102,11 @@ wrist_radius = 5;
 outer_arm_joint_peg_radius = 4;
 
 inner_arm_joint_radius = 15;
-inner_arm_joint_height = 18;
+inner_arm_joint_height = outer_arm_joint_height;
 inner_arm_joint_bump_radius = outer_arm_joint_peg_radius;
 inner_arm_joint_bump_height = outer_arm_joint_height / 3 / 3;
 elbow_joint_ball_height = inner_arm_joint_height / 3 * .7;
 
-upper_arm_length = 70;
-upper_arm_girth = 16;
 
 /**
  * Base
@@ -263,17 +266,8 @@ module eye() {
  */
 module forearm() {
 	color( "green" ) translate([0,0,-outer_arm_joint_height / 2]) union() {
-		// The outside circular joint pieces at the elbow.
-		difference() {
-			// The outer parts of the socket.
-			cylinder(r=outer_arm_joint_radius, h=outer_arm_joint_height);
-		
-			// The opening for elbow_joint_ball.
-			translate([0,0,outer_arm_joint_height / 3]) cylinder(r=outer_arm_joint_radius, h=outer_arm_joint_height / 3);
-		
-			// The center hole for the pegs.
-			cylinder(r=outer_arm_joint_peg_radius, h=outer_arm_joint_height);
-		};
+		// The ball of the elbow joint.
+		translate([0,0,outer_arm_joint_height / 2]) elbow_joint_ball();
 
 		// The thicker part of the forearm.
 		translate([0,0,outer_arm_joint_height / 2]) rotate([90,0,0]) difference() {
@@ -525,6 +519,7 @@ module elbow_joint_ball() {
 
 module upper_arm() {
 	color( "green" ) union() {
+		// Shoulder joint.
 		difference() {
 			sphere(r=joint_ball_radius);
 			translate([(joint_radius*5/3),0,0]) cube([joint_radius*2, joint_radius*2, joint_radius*2],true);
@@ -534,8 +529,18 @@ module upper_arm() {
 			rotate([0,90,0]) translate([0,0,-(upper_arm_length+joint_radius)]) linear_extrude(upper_arm_length+joint_radius)  circle(r=upper_arm_girth/2);
 			translate([-(upper_arm_length+joint_radius),0,-inner_arm_joint_height/2]) linear_extrude(inner_arm_joint_height) circle(r=inner_arm_joint_radius);
 		};
-	
-		translate([-(upper_arm_length+joint_radius),0,0]) elbow_joint_ball();
+
+		// The outside circular joint pieces at the elbow.
+		translate([-(upper_arm_length+joint_radius),0,-(outer_arm_joint_height/2)]) difference() {
+			// The outer parts of the socket.
+			cylinder(r=outer_arm_joint_radius, h=outer_arm_joint_height);
+		
+			// The opening for elbow_joint_ball.
+			translate([0,0,outer_arm_joint_height / 3]) cylinder(r=outer_arm_joint_radius, h=outer_arm_joint_height / 3);
+		
+			// The center hole for the pegs.
+			cylinder(r=outer_arm_joint_peg_radius, h=outer_arm_joint_height);
+		};
 	}
 };
 
