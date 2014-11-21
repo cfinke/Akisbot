@@ -486,11 +486,12 @@ module meter() {
 };
 
 module nameplate() {
-	resize(newsize=[nameplate_width,nameplate_height,nameplate_depth]) union() {
-		color( "darkgreen" ) linear_extrude(3) square([60,13]);
+    color( "darkgreen" ) linear_extrude(nameplate_depth) square([nameplate_width,nameplate_height], true);
+};
 
-		color( "white" ) translate([9,3,2])  linear_extrude(4) text(text="AKISBOT", size=7);
-	}
+module nameplate_stamp() {
+    linear_extrude(nameplate_width / 2) square([nameplate_width,nameplate_height], true);
+    mirror([1,0,0]) linear_extrude((nameplate_width / 2) * 1.25) text(text="AKISBOT", size=nameplate_height * 0.6, halign="center", valign="center");
 };
 
 module neck() {
