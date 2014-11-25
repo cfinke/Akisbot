@@ -99,7 +99,7 @@ claw_opening_width = 8;
 claw_depth = forearm_radius * 2;
 forearm_length = 40;
 wrist_length = 25;
-wrist_radius = 5;
+wrist_radius = 6;
 
 outer_arm_joint_peg_radius = 4;
 
