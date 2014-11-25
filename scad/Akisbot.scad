@@ -30,13 +30,13 @@ vent_height = body_height * .14;
 vent_width = body_width *.22;
 nameplate_width = vent_width;
 nameplate_height = nameplate_width * .23;
-nameplate_depth = wall_thickness * .25;
+nameplate_depth = wall_thickness * .125;
 vent_count = 8;
 
 vent_left = top_left + ( length_of_body_top * .08 );
 vent_top = body_height * .9;
 
-nameplate_top = vent_top - vent_height -  (nameplate_height / 2 );
+nameplate_top = vent_top - vent_height - (nameplate_height / 2 );
 nameplate_left = vent_left;
 
 /**
