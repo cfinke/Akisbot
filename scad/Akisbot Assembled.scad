@@ -1,16 +1,15 @@
-use <Akisbot.scad>
-
+include <Akisbot.scad>
 
 // todo 257 = body height plus neck height
 head_offset_y = 257;
 
 translate([-body_width/2,body_depth/2,0]) rotate([90,0,0]) back();
 rotate([0,0,180]) translate([-body_width/2,body_depth/2,0]) rotate([90,0,0]) front();
-translate([-(body_width / 2 ) + nameplate_left, -( body_depth / 2 ), nameplate_top - nameplate_height]) rotate([90, 0, 0]) nameplate();
+translate([(nameplate_width / 2 )-(body_width / 2 )+nameplate_left, -( body_depth / 2 ), nameplate_top - (nameplate_height/2)]) rotate([90, 0, 0]) nameplate();
 
 // Neck and head
-translate([0,0, body_height - (joint_radius*2/3)]) rotate([0,90,0]) neck();
-// todo 257 = body height plus neck height
+translate([0,0, body_height - (joint_radius*2/3)]) translate([0, 0, neck_length / 2]) rotate([0,90,0]) neck();
+
 translate([-head_width/2,head_depth/2,head_offset_y]) rotate([90,0,0]) head_back();
 rotate([0,0,180]) translate([-head_width/2,head_depth/2,head_offset_y]) rotate([90,0,0]) union() {
 	head_front();
@@ -39,16 +38,28 @@ translate([0,0,-base_height + ( joint_radius * 1 / 3 )]) union() {
         };
 
 	color( "gray" ) union() {
-            translate([-wheel_gap / 2,90,0]) wheel();
-            translate([-wheel_gap / 2,-90,0]) wheel();
-            translate([wheel_gap / 2,90,0]) rotate([0,0,180]) wheel();
-            translate([wheel_gap / 2,-90,0]) rotate([0,0,180]) wheel();
-        };
+	   translate([-(wheel_gap / 2) - wheel_half_height - tread_brace_thickness,90,0]) rotate([0,90,0]) wheel_half();
+      translate([-(wheel_gap / 2) - wheel_half_height - tread_brace_thickness,-90,0]) rotate([0,90,0])wheel_half();
+      translate([(wheel_gap / 2) + wheel_half_height+tread_brace_thickness,90,0]) rotate([0,-90,0]) wheel_half();
+      translate([(wheel_gap / 2) + wheel_half_height+tread_brace_thickness,-90,0]) rotate([0,-90,0]) wheel_half();
 
-	color( "black") union() {
-            translate([-wheel_gap / 2,0,0]) crawler();
-            translate([wheel_gap / 2,0,0]) crawler();
-        };
+		translate([-(wheel_gap / 2) + wheel_half_height,90,0]) rotate([0,90,180]) wheel_half();
+		translate([-(wheel_gap / 2) + wheel_half_height,-90,0]) rotate([0,90,180])wheel_half();
+		translate([(wheel_gap / 2) - wheel_half_height,90,0]) rotate([0,-90,180]) wheel_half();
+		translate([(wheel_gap / 2) - wheel_half_height,-90,0]) rotate([0,-90,180]) wheel_half();
+	};
+
+	color( "black" ) union() {
+		scale([1,1.2,0.5]) translate([-(wheel_gap / 2) - wheel_half_height - tread_brace_thickness+wheel_wall_thickness+(gap_width/2),0,0]) rotate([0,90,0]) difference() {
+			track();
+			cylinder(r=tread_radius_inner-(indentation_circle_radius*2)-tread_thickness, h=tread_width);
+		}
+
+		scale([1,1.2,0.5]) translate([(wheel_gap / 2) - wheel_half_height+wheel_wall_thickness+(gap_width/2),0,0]) rotate([0,90,0]) difference() {
+			track();
+			cylinder(r=tread_radius_inner-(indentation_circle_radius*2)-tread_thickness, h=tread_width);
+		}
+	}
 };
 
 translate([-(head_width / 2) + head_top_left, 0, body_height + head_height - (antenna_base_radius / 2)]) rotate([0,270,0]) antenna();
