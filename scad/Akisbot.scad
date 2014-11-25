@@ -55,10 +55,10 @@ head_top_left = round( ( head_width - length_of_head_top ) / 2 );
 neck_length = 60;
 neck_girth = 20;
 
-antenna_length = head_width * 0.22;
-antenna_girth = 6;
+antenna_length = head_width * 0.2;
+antenna_girth = 7;
 antenna_ball_radius = 8;
-antenna_base_radius = head_depth / 2;
+antenna_base_radius = head_depth * 0.4;
 
 /**
  * Shoulders
@@ -110,21 +110,19 @@ inner_arm_joint_bump_radius = outer_arm_joint_peg_radius;
 inner_arm_joint_bump_height = outer_arm_joint_height / 3 / 3;
 elbow_joint_ball_height = inner_arm_joint_height / 3 * .7;
 
-
 /**
  * Base
  */
 wheel_gap = body_width * 0.8;
-wheel_width = 125;
 wheel_depth = 80;
 base_depth = body_depth * 0.5;
 base_height = 60;
 
 module antenna() {
-    color( "gray" ) union() {
+    rotate([270+head_angle,0,0]) color( "gray" ) union() {
         translate([0, 0, -antenna_base_radius * 0.5]) difference() {
             sphere(r=antenna_base_radius);
-            translate([0, 0, -antenna_base_radius * 0.5]) cube(antenna_base_radius * 2, true);
+            rotate([90-head_angle,0,0]) translate([0, 0, -antenna_base_radius * 0.5]) cube(antenna_base_radius * 2, true);
         };
         
         // Stop short of the full length so that the cylinder doesn't pole through the top of the ball.
