@@ -1,4 +1,4 @@
-include <Akisbot.scad>
+use <Akisbot.scad>
 
 
 // todo 257 = body height plus neck height

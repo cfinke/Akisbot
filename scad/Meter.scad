@@ -1,3 +1,3 @@
-include <Akisbot.scad>
+use <Akisbot.scad>
 
 meter();
