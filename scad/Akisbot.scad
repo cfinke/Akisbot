@@ -489,8 +489,8 @@ module nameplate() {
 };
 
 module nameplate_stamp() {
-    linear_extrude(nameplate_width / 2) square([nameplate_width,nameplate_height], true);
-    mirror([1,0,0]) linear_extrude((nameplate_width / 2) * 1.25) text(text="AKISBOT", size=nameplate_height * 0.6, halign="center", valign="center");
+    linear_extrude(3) square([nameplate_width,nameplate_height], true);
+    mirror([1,0,0]) linear_extrude(10) text(text="AKISBOT", size=nameplate_height * 0.6, halign="center", valign="center");
 };
 
 module neck() {
