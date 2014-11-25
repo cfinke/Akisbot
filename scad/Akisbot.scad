@@ -558,20 +558,76 @@ module tread_brace() {
     color( "green" ) translate([-15, -109.5, -7.5]) scale(3) rotate([90, 0, 90]) import("../inc/Tread Brace.stl");
 };
 
-/**
- * The wheel that drives the crawlers.
- * @see http://www.thingiverse.com/thing:332816/
- */
-module wheel() {
-    // The wheels are rotated 30º in the STL and are off-center by [42, 6, 32] (after scaling).
-    color( "gray" ) translate([-42, -6, -32]) scale(3) rotate([0, 0, -30]) import( "../inc/Tread Wheel.stl" );
+
+tread_width = 60;
+
+wheel_radius = base_height / 2 * 1.1;
+
+axle_radius = 7.5;
+tread_brace_thickness = 4.5;
+wheel_wall_thickness = tread_brace_thickness;
+
+
+
+// The ratio of the length of the straight top and bottom of the tread braces
+// to the height of the tread brace is 71 : 18.
+tread_circumference = (2 * PI * (base_height / 2)) + ((base_height * 71 / 18) * 2);
+tread_radius_inner = tread_circumference / ( 2 * PI );
+tread_height = 5; // track thickness (difference in radius between inside and outside)
+tread_radius_outer = tread_radius_inner + tread_height; // outside radius of track
+
+tread_thickness=0.3; // thread width
+tread_tooth_count=40; // number of teeth around the track
+tread_tooth_ratio=0.6; // tooth size ratio (between 0 and 1)
+
+// The part of each wheel that touches the tread accounts for X% of the total tread length.
+wheel_percentage = ((2 * PI * (base_height / 2)) / 2) / tread_circumference;
+wheel_tooth_count = floor(wheel_percentage * tread_tooth_count * 2); // Multiply by two to account for half of the teeth being unused at any moment.
+
+// ai is the diameter of the indentations in the wheel
+ai = (((wheel_radius / wheel_tooth_count) * (2 * PI)) - (4 * tread_thickness)) * tread_tooth_ratio;
+indentation_circle_radius = ((tread_circumference / tread_tooth_count / 2) - (2 * tread_thickness)) * 0.45;
+
+module track(){
+	
+	linear_extrude(tread_width) difference(){
+		circle(r=tread_radius_outer);
+
+		for(i=[1:tread_tooth_count]) rotate([0, 0, i * 360 / tread_tooth_count]) {
+			translate([tread_radius_inner-indentation_circle_radius,0,0]) rotate([0,0,270]) union() {
+				circle(r=indentation_circle_radius);
+				polygon(points=[[-indentation_circle_radius,0], [0,indentation_circle_radius+(tread_height*2)], [indentation_circle_radius,0]], paths=[[0,1,2]]);
+			}
+		}
+	}
 }
 
-/**
- * The rubber part of the treads.
- * @see http://www.thingiverse.com/thing:332816/
- */
-module crawler() {
-    // The crawlers are rotated [-90º, 0, -90º] in the STL and are off-center by [27.5, 180, 182] (after scaling).
-    color( "black" ) translate([27.5, 180, 182]) rotate([90, 0, 90]) scale(3) import( "../inc/Treads.stl" );
+
+tread_socket_width = tread_width;
+wheel_half_height = (tread_socket_width + (2 * wheel_wall_thickness)) / 2;
+gap_width = tread_brace_thickness * 1.1;
+
+module wheel(){
+	union() {
+		wheel_half();
+		cylinder(r=axle_radius * 0.9, h=wheel_half_height+(gap_width*3));
+	}
+
+	translate([wheel_radius * 2.5, 0, 0]) difference() {
+		wheel_half();
+		translate([0, 0, wheel_wall_thickness]) cylinder(r=axle_radius, h=wheel_half_height+(gap_width*3));
+	};
 }
+
+module wheel_half() {
+	intersection() {
+		difference() {
+			cylinder(r=wheel_radius, h=tread_socket_width + (2 * wheel_wall_thickness));
+			for (i=[1:wheel_tooth_count]) {
+				rotate([0, 0, i * (360 / wheel_tooth_count)]) translate([wheel_radius, 0, wheel_wall_thickness]) cylinder(r=ai / 2,h=tread_socket_width);
+			}
+		}
+
+		translate([0, 0, wheel_half_height / 2]) cube([wheel_radius * 2, wheel_radius * 2, wheel_half_height], true);
+	}
+};
