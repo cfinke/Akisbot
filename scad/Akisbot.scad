@@ -527,7 +527,7 @@ module upper_arm() {
 		// Shoulder joint.
 		difference() {
 			sphere(r=joint_ball_radius);
-			translate([(joint_radius*5/3),0,0]) cube([joint_radius*2, joint_radius*2, joint_radius*2],true);
+			translate([(joint_radius*4/3),0,0]) cube([joint_radius*2, joint_radius*2, joint_radius*2],true);
 		};
 	
 		difference() {
