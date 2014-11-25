@@ -494,17 +494,19 @@ module nameplate_stamp() {
 };
 
 module neck() {
-    translate([neck_length / 2, 0, 0]) difference() {
-        sphere(r=joint_ball_radius);
-        translate([( joint_ball_radius * 5 / 3 ), 0, 0]) cube(joint_ball_radius * 2, true);
-    };
-
-    mirror([1,0,0]) translate([neck_length / 2, 0, 0]) difference() {
-        sphere(r=joint_ball_radius);
-        translate([( joint_ball_radius * 5 / 3 ), 0, 0]) cube(joint_ball_radius * 2, true);
-    };
-    
-    rotate([0, 90, 0]) translate([0, 0, -(neck_length / 2)]) cylinder(r=neck_girth / 2, h=neck_length);
+	color( "green" ) union() {
+	    translate([neck_length / 2, 0, 0]) difference() {
+	        sphere(r=joint_ball_radius);
+	        translate([( joint_ball_radius * 4 / 3 ), 0, 0]) cube(joint_ball_radius * 2, true);
+	    };
+	
+	    mirror([1,0,0]) translate([neck_length / 2, 0, 0]) difference() {
+	        sphere(r=joint_ball_radius);
+	        translate([( joint_ball_radius * 4 / 3 ), 0, 0]) cube(joint_ball_radius * 2, true);
+	    };
+	    
+	    rotate([0, 90, 0]) translate([0, 0, -(neck_length / 2)]) cylinder(r=neck_girth / 2, h=neck_length);
+	}
 };
 
 module elbow_joint_ball() {
