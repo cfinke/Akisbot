@@ -463,16 +463,18 @@ module eye_ring() {
 };
 
 module meter() {
+	meter_width = body_width * .5;
+
 	union() {
 		color( "white" ) linear_extrude(3) difference() {
-			circle(r=60);
+			circle(r=meter_width / 2 * .92);
 			translate([-100,-23,0]) square(200);
 		}
 
 		color( "white" ) linear_extrude(5) difference() {
-			circle(r=65);
+			circle(r=meter_width / 2);
 			translate([-100,-23,0]) square(200);
-			circle(r=60);
+			circle(r=meter_width / 2 * .92);
 		}
 
 		color( "black" ) translate([0,-32,1]) linear_extrude(5) rotate([0,0,135]) union() {
