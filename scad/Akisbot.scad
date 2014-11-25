@@ -256,7 +256,7 @@ module button() {
  */
 module eye() {
 	difference() {
-		color( "white" ) cylinder(r=inner_eye_radius * .98, h=inner_eye_depth );
+		color( "white" ) cylinder(r=inner_eye_radius * .975, h=inner_eye_depth );
 		color( "black" ) cube([pupil_width,pupil_width,inner_eye_depth]);
 	}
 };
