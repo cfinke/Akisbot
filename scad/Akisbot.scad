@@ -85,7 +85,6 @@ pupil_width = inner_eye_radius * .45;
  * Arms
  */
 
-
 upper_arm_length = 70;
 upper_arm_girth = 20;
 
