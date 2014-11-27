@@ -1,3 +1,0 @@
-use <Akisbot.scad>
-
-nameplate();
