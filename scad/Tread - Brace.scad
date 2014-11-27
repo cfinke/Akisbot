@@ -1,3 +1,3 @@
-use <Akisbot.scad>
+include <Akisbot.scad>;
 
 tread_brace();

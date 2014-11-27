@@ -1,3 +1,3 @@
-use <Akisbot.scad>
+include <Akisbot.scad>;
 
 upper_arm();
