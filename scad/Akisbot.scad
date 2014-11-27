@@ -567,8 +567,6 @@ wheel_wall_thickness = tread_brace_thickness;
 tread_crawler_horizontal_length = 187.5;
 
 tread_circumference = (2 * PI * (base_height / 2)) + (2 * tread_crawler_horizontal_length);
-
-echo(tread_circumference);
 tread_radius_inner = tread_circumference / ( 2 * PI );
 tread_height = 5; // track thickness (difference in radius between inside and outside)
 tread_radius_outer = tread_radius_inner + tread_height; // outside radius of track
