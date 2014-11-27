@@ -5,7 +5,6 @@ head_offset_y = 257;
 
 translate([-body_width/2,body_depth/2,0]) rotate([90,0,0]) back();
 rotate([0,0,180]) translate([-body_width/2,body_depth/2,0]) rotate([90,0,0]) front();
-translate([(nameplate_width / 2 )-(body_width / 2 )+nameplate_left, -( body_depth / 2 ), nameplate_top - (nameplate_height/2)]) rotate([90, 0, 0]) nameplate();
 
 // Neck and head
 translate([0,0, body_height - (joint_radius*2/3)]) translate([0, 0, neck_length / 2]) rotate([0,90,0]) neck();
