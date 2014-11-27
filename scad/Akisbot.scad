@@ -628,3 +628,12 @@ module wheel_half() {
 		translate([0, 0, wheel_half_height / 2]) cube([wheel_radius * 2, wheel_radius * 2, wheel_half_height], true);
 	}
 };
+
+module monogram_stamp() {
+    mirror([1,0,0]) translate([5,0,0]) union() {
+        translate([-5,0,0]) cube([40, 29, 3]);
+        linear_extrude(20) translate([-2, -2.35, 0]) resize([31,29,0]) import("../inc/A.dxf");
+        translate([-1.5,13,0]) cylinder(r=1.5, h=20);
+        translate([32,13,0]) cylinder(r=1.5, h=20);
+    }
+}
