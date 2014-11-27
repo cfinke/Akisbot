@@ -484,13 +484,9 @@ module meter() {
 	}
 };
 
-module nameplate() {
-    color( "darkgreen" ) linear_extrude(nameplate_depth) square([nameplate_width,nameplate_height], true);
-};
-
 module nameplate_stamp() {
-    linear_extrude(3) square([nameplate_width,nameplate_height], true);
-    mirror([1,0,0]) linear_extrude(10) text(text="AKISBOT", size=nameplate_height * 0.6, halign="center", valign="center");
+    linear_extrude(3) square([nameplate_width*2,nameplate_height], true);
+    mirror([1,0,0]) linear_extrude(10) text(text="AKISBOT", size=nameplate_height*0.68, halign="center", valign="center", spacing=1.1);
 };
 
 module neck() {
