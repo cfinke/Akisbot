@@ -552,40 +552,38 @@ module tread_brace() {
     color( "green" ) difference() {
         union() {
             cube([tread_brace_thickness, tread_crawler_horizontal_length, base_depth], true);
-            translate([-tread_brace_thickness/2, tread_crawler_horizontal_length / 2, 0]) rotate([0,90,0]) cylinder(r=base_depth / 2, h=tread_brace_thickness);
-            translate([-tread_brace_thickness/2, -tread_crawler_horizontal_length / 2, 0]) rotate([0,90,0]) cylinder(r=base_depth / 2, h=tread_brace_thickness);
+            translate([-tread_brace_thickness/2, 0, 0]) union() {
+            translate([0, tread_crawler_horizontal_length / 2, 0]) rotate([0,90,0]) cylinder(r=base_depth / 2, h=tread_brace_thickness);
+            translate([0, -tread_crawler_horizontal_length / 2, 0]) rotate([0,90,0]) cylinder(r=base_depth / 2, h=tread_brace_thickness);
+            }
         }
         
-             translate([-tread_brace_thickness/2, tread_crawler_horizontal_length / 2, 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
-            translate([-tread_brace_thickness/2, -tread_crawler_horizontal_length / 2, 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
+        translate([-tread_brace_thickness/2, 0, 0]) union() {
+             translate([0, (tread_crawler_horizontal_length / 2) + (axle_radius), 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
+            translate([0, -((tread_crawler_horizontal_length / 2)  + (axle_radius)), 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
+        }
         
         union() {
-            translate([0, (tread_crawler_horizontal_length / 2)+(base_depth / 2), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
+            translate([0, (tread_crawler_horizontal_length / 2)+(base_depth / 4 * 3), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
         
-            translate([0, -((tread_crawler_horizontal_length / 2)+(base_depth / 2)), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
+            translate([0, -((tread_crawler_horizontal_length / 2)+(base_depth / 4 * 3)), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
         }
-        
-//        translate([]) 
-        
     }
-//    tread_brace_thickness
-//tread_crawler_horizontal_length
-
 };
 
 
 tread_width = 60;
 
-wheel_radius = base_height / 2 * 1.1;
+wheel_radius = base_depth / 2 * 1.2;
 
 axle_radius = 7.7;
-tread_brace_thickness = 4.5;
+tread_brace_thickness = 8;
 wheel_wall_thickness = tread_brace_thickness;
 
 // Measured.
 tread_crawler_horizontal_length = 187.5;
 
-tread_circumference = (2 * PI * (base_height / 2)) + (2 * tread_crawler_horizontal_length);
+tread_circumference = (2 * PI * (base_depth / 2)) + (2 * tread_crawler_horizontal_length);
 tread_radius_inner = tread_circumference / ( 2 * PI );
 tread_height = 5; // track thickness (difference in radius between inside and outside)
 tread_radius_outer = tread_radius_inner + tread_height; // outside radius of track
@@ -595,7 +593,7 @@ tread_tooth_count=40; // number of teeth around the track
 tread_tooth_ratio=0.6; // tooth size ratio (between 0 and 1)
 
 // The part of each wheel that touches the tread accounts for X% of the total tread length.
-wheel_percentage = ((2 * PI * (base_height / 2)) / 2) / tread_circumference;
+wheel_percentage = ((2 * PI * (base_depth / 2)) / 2) / tread_circumference;
 wheel_tooth_count = floor(wheel_percentage * tread_tooth_count * 2); // Multiply by two to account for half of the teeth being unused at any moment.
 
 // ai is the diameter of the indentations in the wheel
@@ -624,7 +622,7 @@ gap_width = tread_brace_thickness * 1.1;
 module wheel(){
 	union() {
 		wheel_half();
-		cylinder(r=axle_radius, h=wheel_half_height+(gap_width*3));
+		cylinder(r=axle_radius, h=wheel_half_height+(gap_width*2));
 	}
 
 	translate([wheel_radius * 2.5, 0, 0]) difference() {
