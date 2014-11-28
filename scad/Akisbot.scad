@@ -286,11 +286,23 @@ module base() {
  * The button under the meter on his chest.
  */
 
-
 module button() {
-	cube([button_width, button_height, button_depth]);
-};
-button();
+    cube([button_width, button_height, button_depth + wall_thickness]);
+}
+
+/**
+ * The combined set of buttons that can be inserted from the inside of the body front.
+ */
+module buttons() {
+    rotate([90, 0, 0]) union() {
+        translate([-meter_width*1.25*.5, -button_height * .125, -3]) color( "white") cube([meter_width * 1.25, button_height * 1.25, 3]);
+        color( "yellow" ) translate([-meter_width / 2,0,0]) button();
+        color( "red" ) translate([(-meter_width / 2) + button_width + (meter_width * .25 / 3),0,0]) button();
+        color( "purple" ) translate([meter_width *.25 / 3 / 2,0,0]) button();
+        color( "aqua" ) translate([-button_width + (meter_width / 2),0,0]) button();
+    }
+}
+
 /**
  * The inner portion of the eye.
  */

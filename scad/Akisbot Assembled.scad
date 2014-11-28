@@ -68,7 +68,4 @@ translate([-eye_offset_x,-(head_depth / 2)-inner_eye_depth,head_offset_y+eye_off
 translate([eye_offset_x,-(head_depth / 2)-inner_eye_depth,head_offset_y+eye_offset_y]) rotate([270,0,0]) eye();
 
 translate([0,-body_depth/2,body_height * .25]) rotate([90,180,0]) meter();
-color( "yellow" ) translate([-meter_width / 2,-body_depth/2,body_height * .25]) rotate([90,0,0]) button();
-color( "red" ) translate([(-meter_width / 2) + button_width + (meter_width * .25 / 3),-body_depth/2,body_height * .25]) rotate([90,0,0]) button();
-color( "purple" ) translate([meter_width *.25 / 3 / 2,-body_depth/2,body_height * .25]) rotate([90,0,0]) button();
-color( "aqua" ) translate([-button_width + (meter_width / 2),-body_depth/2,body_height * .25]) rotate([90,0,0]) button();
+translate([0,-(body_depth/2)+wall_thickness, body_height * .25]) buttons();
