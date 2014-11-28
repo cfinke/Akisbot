@@ -547,11 +547,30 @@ module upper_arm() {
 
 /**
  * The brace that holds the wheels.
- * @see http://www.thingiverse.com/thing:332816/
  */
 module tread_brace() {
-    // The wheels are rotated [-90º, 0, -90º] in the STL and are off-center by [15, 109.5, 7.5] (after scaling).
-    color( "green" ) translate([-15, -109.5, -7.5]) scale(3) rotate([90, 0, 90]) import("../inc/Tread Brace.stl");
+    color( "green" ) difference() {
+        union() {
+            cube([tread_brace_thickness, tread_crawler_horizontal_length, base_depth], true);
+            translate([-tread_brace_thickness/2, tread_crawler_horizontal_length / 2, 0]) rotate([0,90,0]) cylinder(r=base_depth / 2, h=tread_brace_thickness);
+            translate([-tread_brace_thickness/2, -tread_crawler_horizontal_length / 2, 0]) rotate([0,90,0]) cylinder(r=base_depth / 2, h=tread_brace_thickness);
+        }
+        
+             translate([-tread_brace_thickness/2, tread_crawler_horizontal_length / 2, 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
+            translate([-tread_brace_thickness/2, -tread_crawler_horizontal_length / 2, 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
+        
+        union() {
+            translate([0, (tread_crawler_horizontal_length / 2)+(base_depth / 2), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
+        
+            translate([0, -((tread_crawler_horizontal_length / 2)+(base_depth / 2)), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
+        }
+        
+//        translate([]) 
+        
+    }
+//    tread_brace_thickness
+//tread_crawler_horizontal_length
+
 };
 
 
