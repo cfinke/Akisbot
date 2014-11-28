@@ -39,6 +39,11 @@ vent_top = body_height * .9;
 nameplate_top = vent_top - vent_height - (nameplate_height / 2 );
 nameplate_left = vent_left;
 
+meter_width = body_width * .5;
+button_width = meter_width / 5;
+button_height = button_width * .7;
+button_depth = body_depth * 0.07;
+
 /**
  * Head
  */
@@ -116,6 +121,38 @@ wheel_gap = body_width * 0.8;
 wheel_depth = 80;
 base_depth = body_depth * 0.5;
 base_height = 60;
+
+// Measured.
+tread_crawler_horizontal_length = 187.5;
+
+
+
+tread_width = 60;
+
+wheel_radius = base_depth / 2 * 1.2;
+
+axle_radius = 7.7;
+tread_brace_thickness = 8;
+wheel_wall_thickness = tread_brace_thickness;
+
+
+
+tread_circumference = (2 * PI * (base_depth / 2)) + (2 * tread_crawler_horizontal_length);
+tread_radius_inner = tread_circumference / ( 2 * PI );
+tread_height = 5; // track thickness (difference in radius between inside and outside)
+tread_radius_outer = tread_radius_inner + tread_height; // outside radius of track
+
+tread_thickness=0.2; // thread width
+tread_tooth_count=40; // number of teeth around the track
+tread_tooth_ratio=0.6; // tooth size ratio (between 0 and 1)
+
+// The part of each wheel that touches the tread accounts for X% of the total tread length.
+wheel_percentage = ((2 * PI * (base_depth / 2)) / 2) / tread_circumference;
+wheel_tooth_count = floor(wheel_percentage * tread_tooth_count * 2); // Multiply by two to account for half of the teeth being unused at any moment.
+
+// ai is the diameter of the indentations in the wheel
+ai = (((wheel_radius / wheel_tooth_count) * (2 * PI)) - (4 * tread_thickness)) * tread_tooth_ratio;
+indentation_circle_radius = ((tread_circumference / tread_tooth_count / 2) - (2 * tread_thickness)) * 0.45;
 
 module antenna() {
 	rotate([270+head_angle,0,0]) color( "gray" ) union() {
@@ -248,10 +285,12 @@ module base() {
 /**
  * The button under the meter on his chest.
  */
-module button() {
-	cube([body_width *.1, body_height * .07, body_depth * 0.07]);
-};
 
+
+module button() {
+	cube([button_width, button_height, button_depth]);
+};
+button();
 /**
  * The inner portion of the eye.
  */
@@ -464,7 +503,6 @@ module eye_ring() {
 };
 
 module meter() {
-	meter_width = body_width * .5;
 
 	union() {
 		color( "white" ) linear_extrude(3) difference() {
@@ -546,6 +584,8 @@ module upper_arm() {
 	}
 };
 
+wheel_axle_offset = (tread_crawler_horizontal_length / 2) + (axle_radius);
+
 /**
  * The brace that holds the wheels.
  */
@@ -560,46 +600,18 @@ module tread_brace() {
 		}
 
 		translate([-tread_brace_thickness/2, 0, 0]) union() {
-			 translate([0, (tread_crawler_horizontal_length / 2) + (axle_radius), 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
-			translate([0, -((tread_crawler_horizontal_length / 2)  + (axle_radius)), 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
+			 translate([0, wheel_axle_offset, 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
+			translate([0, -wheel_axle_offset, 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
 		}
 
 		union() {
-			translate([0, (tread_crawler_horizontal_length / 2)+(base_depth / 4 * 3), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
+			translate([0, wheel_axle_offset+(base_depth/2), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
 
-			translate([0, -((tread_crawler_horizontal_length / 2)+(base_depth / 4 * 3)), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
+			translate([0, -(wheel_axle_offset+(base_depth/2)), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
 		}
 	}
 };
 
-
-tread_width = 60;
-
-wheel_radius = base_depth / 2 * 1.2;
-
-axle_radius = 7.7;
-tread_brace_thickness = 8;
-wheel_wall_thickness = tread_brace_thickness;
-
-// Measured.
-tread_crawler_horizontal_length = 187.5;
-
-tread_circumference = (2 * PI * (base_depth / 2)) + (2 * tread_crawler_horizontal_length);
-tread_radius_inner = tread_circumference / ( 2 * PI );
-tread_height = 5; // track thickness (difference in radius between inside and outside)
-tread_radius_outer = tread_radius_inner + tread_height; // outside radius of track
-
-tread_thickness=0.2; // thread width
-tread_tooth_count=40; // number of teeth around the track
-tread_tooth_ratio=0.6; // tooth size ratio (between 0 and 1)
-
-// The part of each wheel that touches the tread accounts for X% of the total tread length.
-wheel_percentage = ((2 * PI * (base_depth / 2)) / 2) / tread_circumference;
-wheel_tooth_count = floor(wheel_percentage * tread_tooth_count * 2); // Multiply by two to account for half of the teeth being unused at any moment.
-
-// ai is the diameter of the indentations in the wheel
-ai = (((wheel_radius / wheel_tooth_count) * (2 * PI)) - (4 * tread_thickness)) * tread_tooth_ratio;
-indentation_circle_radius = ((tread_circumference / tread_tooth_count / 2) - (2 * tread_thickness)) * 0.45;
 
 module track(){
 

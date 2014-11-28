@@ -1,7 +1,7 @@
 include <Akisbot.scad>;
 
-// todo 257 = body height plus neck height
-head_offset_y = 257;
+// ((joint_ball_radius * 4 / 3) * 2) is the distance between the centers of the two neck piece balls.
+head_offset_y = body_height - (joint_radius*2/3) + ((joint_ball_radius * 4 / 3) * 2) - (joint_radius*2/3);
 
 translate([-body_width/2,body_depth/2,0]) rotate([90,0,0]) back();
 rotate([0,0,180]) translate([-body_width/2,body_depth/2,0]) rotate([90,0,0]) front();
@@ -32,29 +32,29 @@ color( "green" ) translate([0,0,-base_height + ( joint_radius * 1 / 3 )]) base()
 
 translate([0,0,-base_height + ( joint_radius * 1 / 3 )]) union() {
 	color( "green" ) union() {
-            translate([wheel_gap / 2,0,0]) tread_brace();
-            mirror([1,0,0]) translate([wheel_gap / 2,0,0]) tread_brace();
+            translate([(wheel_gap / 2)+(tread_brace_thickness/2),0,0]) tread_brace();
+            mirror([1,0,0]) translate([(wheel_gap / 2)+(tread_brace_thickness/2),0,0]) tread_brace();
         };
 
 	color( "gray" ) union() {
-	   translate([-(wheel_gap / 2) - wheel_half_height - tread_brace_thickness,90,0]) rotate([0,90,0]) wheel_half();
-      translate([-(wheel_gap / 2) - wheel_half_height - tread_brace_thickness,-90,0]) rotate([0,90,0])wheel_half();
-      translate([(wheel_gap / 2) + wheel_half_height+tread_brace_thickness,90,0]) rotate([0,-90,0]) wheel_half();
-      translate([(wheel_gap / 2) + wheel_half_height+tread_brace_thickness,-90,0]) rotate([0,-90,0]) wheel_half();
+	   translate([-(wheel_gap / 2) - wheel_half_height - tread_brace_thickness,wheel_axle_offset,0]) rotate([0,90,0]) wheel_half();
+      translate([-(wheel_gap / 2) - wheel_half_height - tread_brace_thickness,-wheel_axle_offset,0]) rotate([0,90,0]) wheel_half();
+      translate([(wheel_gap / 2) + wheel_half_height+tread_brace_thickness,wheel_axle_offset,0]) rotate([0,-90,0]) wheel_half();
+      translate([(wheel_gap / 2) + wheel_half_height+tread_brace_thickness,-wheel_axle_offset,0]) rotate([0,-90,0]) wheel_half();
 
-		translate([-(wheel_gap / 2) + wheel_half_height,90,0]) rotate([0,90,180]) wheel_half();
-		translate([-(wheel_gap / 2) + wheel_half_height,-90,0]) rotate([0,90,180])wheel_half();
-		translate([(wheel_gap / 2) - wheel_half_height,90,0]) rotate([0,-90,180]) wheel_half();
-		translate([(wheel_gap / 2) - wheel_half_height,-90,0]) rotate([0,-90,180]) wheel_half();
+		translate([-(wheel_gap / 2) + wheel_half_height,wheel_axle_offset,0]) rotate([0,90,180]) wheel_half();
+		translate([-(wheel_gap / 2) + wheel_half_height,-wheel_axle_offset,0]) rotate([0,90,180])wheel_half();
+		translate([(wheel_gap / 2) - wheel_half_height,wheel_axle_offset,0]) rotate([0,-90,180]) wheel_half();
+		translate([(wheel_gap / 2) - wheel_half_height,-wheel_axle_offset,0]) rotate([0,-90,180]) wheel_half();
 	};
 
 	color( "black" ) union() {
-		scale([1,1.2,0.5]) translate([-(wheel_gap / 2) - wheel_half_height - tread_brace_thickness+wheel_wall_thickness+(gap_width/2),0,0]) rotate([0,90,0]) difference() {
+		scale([1,1.2,0.5]) translate([-((wheel_gap / 2) + gap_width+wheel_half_height-wheel_wall_thickness),0,0]) rotate([0,90,0]) difference() {
 			track();
 			cylinder(r=tread_radius_inner-(indentation_circle_radius*2)-tread_thickness, h=tread_width);
 		}
 
-		scale([1,1.2,0.5]) translate([(wheel_gap / 2) - wheel_half_height+wheel_wall_thickness+(gap_width/2),0,0]) rotate([0,90,0]) difference() {
+		scale([1,1.2,0.5]) translate([((wheel_gap / 2) + gap_width+wheel_half_height-wheel_wall_thickness)-tread_width-tread_brace_thickness,0,0]) rotate([0,90,0]) difference() {
 			track();
 			cylinder(r=tread_radius_inner-(indentation_circle_radius*2)-tread_thickness, h=tread_width);
 		}
@@ -67,8 +67,8 @@ mirror([1,0,0]) translate([-(head_width / 2) + head_top_left, 0, body_height + h
 translate([-eye_offset_x,-(head_depth / 2)-inner_eye_depth,head_offset_y+eye_offset_y]) rotate([270,0,0]) eye();
 translate([eye_offset_x,-(head_depth / 2)-inner_eye_depth,head_offset_y+eye_offset_y]) rotate([270,0,0]) eye();
 
-translate([0,-body_depth/2,60]) rotate([90,180,0]) meter();
-color( "yellow" ) translate([-60,-body_depth/2,60]) rotate([90,0,0]) button();
-color( "red" ) translate([-28,-body_depth/2,60]) rotate([90,0,0]) button();
-color( "purple" ) translate([4,-body_depth/2,60]) rotate([90,0,0]) button();
-color( "aqua" ) translate([36,-body_depth/2,60]) rotate([90,0,0]) button();
+translate([0,-body_depth/2,body_height * .25]) rotate([90,180,0]) meter();
+color( "yellow" ) translate([-meter_width / 2,-body_depth/2,body_height * .25]) rotate([90,0,0]) button();
+color( "red" ) translate([(-meter_width / 2) + button_width + (meter_width * .25 / 3),-body_depth/2,body_height * .25]) rotate([90,0,0]) button();
+color( "purple" ) translate([meter_width *.25 / 3 / 2,-body_depth/2,body_height * .25]) rotate([90,0,0]) button();
+color( "aqua" ) translate([-button_width + (meter_width / 2),-body_depth/2,body_height * .25]) rotate([90,0,0]) button();
