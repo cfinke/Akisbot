@@ -118,17 +118,17 @@ base_depth = body_depth * 0.5;
 base_height = 60;
 
 module antenna() {
-    rotate([270+head_angle,0,0]) color( "gray" ) union() {
-        translate([0, 0, -antenna_base_radius * 0.5]) difference() {
-            sphere(r=antenna_base_radius);
-            rotate([90-head_angle,0,0]) translate([0, 0, -antenna_base_radius * 0.5]) cube(antenna_base_radius * 2, true);
-        };
-        
-        // Stop short of the full length so that the cylinder doesn't pole through the top of the ball.
-        cylinder(r=antenna_girth / 2, h=antenna_length - (antenna_ball_radius / 2));
-        
-        translate([0, 0, antenna_length - antenna_ball_radius]) sphere(r=antenna_ball_radius);
-    };
+	rotate([270+head_angle,0,0]) color( "gray" ) union() {
+		translate([0, 0, -antenna_base_radius * 0.5]) difference() {
+			sphere(r=antenna_base_radius);
+			rotate([90-head_angle,0,0]) translate([0, 0, -antenna_base_radius * 0.5]) cube(antenna_base_radius * 2, true);
+		};
+
+		// Stop short of the full length so that the cylinder doesn't pole through the top of the ball.
+		cylinder(r=antenna_girth / 2, h=antenna_length - (antenna_ball_radius / 2));
+
+		translate([0, 0, antenna_length - antenna_ball_radius]) sphere(r=antenna_ball_radius);
+	};
 };
 
 module body_side() {
@@ -137,19 +137,19 @@ module body_side() {
 		union() {
 			// Base
 			linear_extrude(wall_thickness) polygon([[0,0],[body_width,0], [top_right, body_height], [top_left, body_height]], [[0,1,2,3]]);
-		
+
 			// Bottom wall
 			translate([0,0,wall_thickness]) linear_extrude((body_depth/2)-wall_thickness) polygon([[0,0],[body_width,0],[body_width,wall_thickness],[0,wall_thickness] ],[[0,1,2,3]]);
-		
+
 			// Top wall
 			translate([0,0,wall_thickness]) linear_extrude((body_depth/2)-wall_thickness) polygon([[top_left,body_height],[top_right, body_height],[top_right,body_height-wall_thickness],[top_left,body_height-wall_thickness] ],[[0,1,2,3]]);
-		
+
 			// Left wall
 			translate([0,0,wall_thickness]) linear_extrude((body_depth/2)-wall_thickness) polygon([[0,0],[top_left,body_height],[top_left+wall_thickness,body_height],[wall_thickness,0]],[[0,1,2,3]]);
-		
+
 			// Right wall
 			translate([0,0,wall_thickness]) linear_extrude((body_depth/2)-wall_thickness) polygon([[body_width,0],[top_right,body_height],[top_right-wall_thickness,body_height],[body_width-wall_thickness,0]],[[0,1,2,3]]);
-		
+
 			// Bottom joint
 			translate([body_width/2,joint_radius*2/3,0]) linear_extrude((body_depth/2)) circle(r=joint_radius+wall_thickness);
 
@@ -207,7 +207,7 @@ module back() {
 								translate([body_width / 2 - joint_radius - ( wall_thickness / 2 ), 0, 0]) circle(r=peg_hole_radius);
 								translate([body_width / 2 + joint_radius + ( wall_thickness / 2 ), 0, 0]) circle(r=peg_hole_radius);
 						};
-						
+
 						translate([0, body_height / 2, 0]) union() {
 							// Side holes.
 							translate([(top_left + wall_thickness) / 2, 0, 0]) circle(r=peg_hole_radius);
@@ -349,19 +349,19 @@ module head_side() {
 		union() {
 			// Base
 			linear_extrude(wall_thickness) polygon([[0,0],[head_width,0], [top_right, head_height], [top_left, head_height]], [[0,1,2,3]]);
-		
+
 			// Bottom wall
 			translate([0,0,wall_thickness]) linear_extrude((head_depth/2)-wall_thickness) polygon([[0,0],[head_width,0],[head_width,wall_thickness],[0,wall_thickness] ],[[0,1,2,3]]);
-		
+
 			// Top wall
 			translate([0,0,wall_thickness]) linear_extrude((head_depth/2)-wall_thickness) polygon([[top_left,head_height],[top_right, head_height],[top_right,head_height-wall_thickness],[top_left,head_height-wall_thickness] ],[[0,1,2,3]]);
-		
+
 			// Left wall
 			translate([0,0,wall_thickness]) linear_extrude((head_depth/2)-wall_thickness) polygon([[0,0],[top_left,head_height],[top_left+wall_thickness,head_height],[wall_thickness,0]],[[0,1,2,3]]);
-		
+
 			// Right wall
 			translate([0,0,wall_thickness]) linear_extrude((head_depth/2)-wall_thickness) polygon([[head_width,0],[top_right,head_height],[top_right-wall_thickness,head_height],[head_width-wall_thickness,0]],[[0,1,2,3]]);
-		
+
 			// Bottom joint
 			translate([head_width/2,joint_radius*2/3,0]) linear_extrude((head_depth/2)) circle(r=joint_radius+wall_thickness);
 		};
@@ -389,14 +389,14 @@ module head_back() {
 				translate([peg_corner_offset, 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
 				translate([head_width-peg_corner_offset, 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
 			};
-	
+
 			translate([0, head_height - (wall_thickness / 2), 0]) union() {
 				// Top pegs.
 				translate([head_top_left+peg_corner_offset, 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
 				translate([head_top_right-peg_corner_offset, 0, 0]) cylinder(h=peg_height,r1=peg_radius, r2=peg_radius / 2);
 			};
-		};	
-	};		
+		};
+	};
 };
 
 module head_front() {
@@ -404,7 +404,7 @@ module head_front() {
 		union() {
 			difference() {
 				color( "green" ) head_side();
-	
+
 				// Smile
 				color( "gray" ) linear_extrude(wall_thickness / 2) polygon( [
 						[0, .41 * head_height],
@@ -415,7 +415,7 @@ module head_front() {
 						[( 1 - .16 ) * head_width, .2 * head_height],
 						[( 1 - .12 ) * head_width, .35 * head_height],
 						[head_width, .41 * head_height],
-		
+
 						[0, (.41 * head_height)+(wall_thickness / 2)],
 						[.12 * head_width, (.35 * head_height)+(wall_thickness / 2)],
 						[.16 * head_width, (.2 * head_height)+(wall_thickness / 2)],
@@ -430,17 +430,17 @@ module head_front() {
 					]
 				);
 			};
-	
+
 			/*
 
-	
+
 			color( "white" ) translate([0,0,-wall_thickness / 4]) linear_extrude(wall_thickness / 4) union() {
 				// Todo These percentages for x offset should be calculated using trig based on the had angle.
 				translate([head_width * 0.05, .32*head_height, 0]) circle(r=.0125 * head_width);
 				translate([head_width * 0.06, .47*head_height, 0]) circle(r=.0125 * head_width);
-		
+
 				translate([head_width * 0.95, .32*head_height, 0]) circle(r=.0125 * head_width);
-				translate([head_width * 0.94, .47*head_height, 0]) circle(r=.0125 * head_width);	
+				translate([head_width * 0.94, .47*head_height, 0]) circle(r=.0125 * head_width);
 			};
 			*/
 		};
@@ -486,23 +486,23 @@ module meter() {
 };
 
 module nameplate_stamp() {
-    linear_extrude(3) square([nameplate_width*2,nameplate_height], true);
-    mirror([1,0,0]) linear_extrude(10) text(text="AKISBOT", size=nameplate_height*0.68, halign="center", valign="center", spacing=1.1);
+	linear_extrude(3) square([nameplate_width*2,nameplate_height], true);
+	mirror([1,0,0]) linear_extrude(10) text(text="AKISBOT", size=nameplate_height*0.68, halign="center", valign="center", spacing=1.1);
 };
 
 module neck() {
 	color( "green" ) union() {
-	    translate([neck_length / 2, 0, 0]) difference() {
-	        sphere(r=joint_ball_radius);
-	        translate([( joint_ball_radius * 4 / 3 ), 0, 0]) cube(joint_ball_radius * 2, true);
-	    };
-	
-	    mirror([1,0,0]) translate([neck_length / 2, 0, 0]) difference() {
-	        sphere(r=joint_ball_radius);
-	        translate([( joint_ball_radius * 4 / 3 ), 0, 0]) cube(joint_ball_radius * 2, true);
-	    };
-	    
-	    rotate([0, 90, 0]) translate([0, 0, -(neck_length / 2)]) cylinder(r=neck_girth / 2, h=neck_length);
+		translate([neck_length / 2, 0, 0]) difference() {
+			sphere(r=joint_ball_radius);
+			translate([( joint_ball_radius * 4 / 3 ), 0, 0]) cube(joint_ball_radius * 2, true);
+		};
+
+		mirror([1,0,0]) translate([neck_length / 2, 0, 0]) difference() {
+			sphere(r=joint_ball_radius);
+			translate([( joint_ball_radius * 4 / 3 ), 0, 0]) cube(joint_ball_radius * 2, true);
+		};
+
+		rotate([0, 90, 0]) translate([0, 0, -(neck_length / 2)]) cylinder(r=neck_girth / 2, h=neck_length);
 	}
 };
 
@@ -526,7 +526,7 @@ module upper_arm() {
 			sphere(r=joint_ball_radius);
 			translate([(joint_radius*4/3),0,0]) cube([joint_radius*2, joint_radius*2, joint_radius*2],true);
 		};
-	
+
 		difference() {
 			rotate([0,90,0]) translate([0,0,-(upper_arm_length+joint_radius)]) linear_extrude(upper_arm_length+joint_radius)  circle(r=upper_arm_girth/2);
 			translate([-(upper_arm_length+joint_radius),0,-inner_arm_joint_height/2]) linear_extrude(inner_arm_joint_height) circle(r=inner_arm_joint_radius);
@@ -536,10 +536,10 @@ module upper_arm() {
 		translate([-(upper_arm_length+joint_radius),0,-(outer_arm_joint_height/2)]) difference() {
 			// The outer parts of the socket.
 			cylinder(r=outer_arm_joint_radius, h=outer_arm_joint_height);
-		
+
 			// The opening for elbow_joint_ball.
 			translate([0,0,outer_arm_joint_height / 3]) cylinder(r=outer_arm_joint_radius, h=outer_arm_joint_height / 3);
-		
+
 			// The center hole for the pegs.
 			cylinder(r=outer_arm_joint_peg_radius, h=outer_arm_joint_height);
 		};
@@ -550,26 +550,26 @@ module upper_arm() {
  * The brace that holds the wheels.
  */
 module tread_brace() {
-    color( "green" ) difference() {
-        union() {
-            cube([tread_brace_thickness, tread_crawler_horizontal_length, base_depth], true);
-            translate([-tread_brace_thickness/2, 0, 0]) union() {
-            translate([0, tread_crawler_horizontal_length / 2, 0]) rotate([0,90,0]) cylinder(r=base_depth / 2, h=tread_brace_thickness);
-            translate([0, -tread_crawler_horizontal_length / 2, 0]) rotate([0,90,0]) cylinder(r=base_depth / 2, h=tread_brace_thickness);
-            }
-        }
-        
-        translate([-tread_brace_thickness/2, 0, 0]) union() {
-             translate([0, (tread_crawler_horizontal_length / 2) + (axle_radius), 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
-            translate([0, -((tread_crawler_horizontal_length / 2)  + (axle_radius)), 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
-        }
-        
-        union() {
-            translate([0, (tread_crawler_horizontal_length / 2)+(base_depth / 4 * 3), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
-        
-            translate([0, -((tread_crawler_horizontal_length / 2)+(base_depth / 4 * 3)), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
-        }
-    }
+	color( "green" ) difference() {
+		union() {
+			cube([tread_brace_thickness, tread_crawler_horizontal_length, base_depth], true);
+			translate([-tread_brace_thickness/2, 0, 0]) union() {
+			translate([0, tread_crawler_horizontal_length / 2, 0]) rotate([0,90,0]) cylinder(r=base_depth / 2, h=tread_brace_thickness);
+			translate([0, -tread_crawler_horizontal_length / 2, 0]) rotate([0,90,0]) cylinder(r=base_depth / 2, h=tread_brace_thickness);
+			}
+		}
+
+		translate([-tread_brace_thickness/2, 0, 0]) union() {
+			 translate([0, (tread_crawler_horizontal_length / 2) + (axle_radius), 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
+			translate([0, -((tread_crawler_horizontal_length / 2)  + (axle_radius)), 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
+		}
+
+		union() {
+			translate([0, (tread_crawler_horizontal_length / 2)+(base_depth / 4 * 3), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
+
+			translate([0, -((tread_crawler_horizontal_length / 2)+(base_depth / 4 * 3)), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
+		}
+	}
 };
 
 
@@ -602,7 +602,7 @@ ai = (((wheel_radius / wheel_tooth_count) * (2 * PI)) - (4 * tread_thickness)) *
 indentation_circle_radius = ((tread_circumference / tread_tooth_count / 2) - (2 * tread_thickness)) * 0.45;
 
 module track(){
-	
+
 	linear_extrude(tread_width+tread_brace_thickness) difference(){
 		circle(r=tread_radius_outer);
 
@@ -646,10 +646,10 @@ module wheel_half() {
 };
 
 module monogram_stamp() {
-    mirror([1,0,0]) translate([5,0,0]) union() {
-        translate([-5,0,0]) cube([40, 29, 3]);
-        linear_extrude(20) translate([-2, -2.35, 0]) resize([31,29,0]) import("../inc/A.dxf");
-        translate([-1.5,13,0]) cylinder(r=1.5, h=20);
-        translate([32,13,0]) cylinder(r=1.5, h=20);
-    }
+	mirror([1,0,0]) translate([5,0,0]) union() {
+		translate([-5,0,0]) cube([40, 29, 3]);
+		linear_extrude(20) translate([-2, -2.35, 0]) resize([31,29,0]) import("../inc/A.dxf");
+		translate([-1.5,13,0]) cylinder(r=1.5, h=20);
+		translate([32,13,0]) cylinder(r=1.5, h=20);
+	}
 }
