@@ -120,7 +120,7 @@ elbow_joint_ball_height = inner_arm_joint_height / 3 * .7;
 wheel_gap = body_width * 0.8;
 wheel_depth = 80;
 base_depth = body_depth * 0.5;
-base_height = 60;
+base_height = 70;
 
 // Measured.
 tread_crawler_horizontal_length = 187.5;
