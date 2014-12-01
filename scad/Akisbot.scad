@@ -131,13 +131,12 @@ tread_width = 60;
 
 wheel_radius = base_depth / 2 * 1.2;
 
-axle_radius = 7.7;
+axle_radius = base_depth / 4;
 tread_brace_thickness = 8;
 wheel_wall_thickness = tread_brace_thickness;
 
-
-
-tread_circumference = (2 * PI * (base_depth / 2)) + (2 * tread_crawler_horizontal_length);
+wheel_axle_offset = (tread_crawler_horizontal_length / 2) + (base_depth / 2) - (axle_radius * 1.5);
+tread_circumference = (2 * PI * wheel_radius) + (4 * wheel_axle_offset);
 tread_radius_inner = tread_circumference / ( 2 * PI );
 tread_height = 5; // track thickness (difference in radius between inside and outside)
 tread_radius_outer = tread_radius_inner + tread_height; // outside radius of track
@@ -605,7 +604,6 @@ module upper_arm() {
 	}
 };
 
-wheel_axle_offset = (tread_crawler_horizontal_length / 2) + (axle_radius);
 
 /**
  * The brace that holds the wheels.
@@ -621,14 +619,14 @@ module tread_brace() {
 		}
 
 		translate([-tread_brace_thickness/2, 0, 0]) union() {
-			 translate([0, wheel_axle_offset, 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
-			translate([0, -wheel_axle_offset, 0]) rotate([0,90,0]) cylinder(r=axle_radius, h=tread_brace_thickness);
+			 translate([0, wheel_axle_offset, 0]) rotate([0,90,0]) cylinder(r=axle_radius*1.25, h=tread_brace_thickness);
+			translate([0, -wheel_axle_offset, 0]) rotate([0,90,0]) cylinder(r=axle_radius*1.25, h=tread_brace_thickness);
 		}
 
 		union() {
-			translate([0, wheel_axle_offset+(base_depth/2), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
+			translate([0, wheel_axle_offset+(base_depth/2), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*1.25*2*.75], true);
 
-			translate([0, -(wheel_axle_offset+(base_depth/2)), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*2*.75], true);
+			translate([0, -(wheel_axle_offset+(base_depth/2)), 0]) cube([tread_brace_thickness*2, base_depth, axle_radius*1.25*2*.75], true);
 		}
 	}
 };
@@ -661,7 +659,7 @@ module wheel(){
 
 	translate([wheel_radius * 2.5, 0, 0]) difference() {
 		wheel_half();
-		translate([0, 0, wheel_wall_thickness]) cylinder(r=axle_radius*1.02, h=wheel_half_height+(gap_width*3));
+		translate([0, 0, wheel_wall_thickness]) cylinder(r=axle_radius*1.04, h=wheel_half_height+(gap_width*3));
 	};
 }
 
