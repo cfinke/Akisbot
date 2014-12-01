@@ -360,6 +360,15 @@ module front() {
 				translate([i * individual_vent_width * 2, 0, 0]) cube([individual_vent_width,vent_height,vent_depth]);
 			};
 		};
+                
+                /**
+                 * The buttons
+                 * Use the button set to create the hole for the buttons, but shift it around a little to give the buttons room to clear through the hole.
+                 */
+                translate([body_width *.495,body_height * .255,wall_thickness]) rotate([90,0,180]) buttons();
+                translate([body_width *.505,body_height * .255,wall_thickness]) rotate([90,0,180]) buttons();
+                translate([body_width *.495,body_height * .245,wall_thickness]) rotate([90,0,180]) buttons();
+                translate([body_width *.505,body_height * .245,wall_thickness]) rotate([90,0,180]) buttons();
 	};
 
 	// Corner pegs
