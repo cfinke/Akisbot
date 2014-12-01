@@ -677,3 +677,7 @@ module monogram_stamp() {
 		translate([32,13,0]) cylinder(r=1.5, h=20);
 	}
 }
+
+module monogram() {
+	color( "white" ) linear_extrude(1) resize([31,29,0]) import("../inc/A.dxf");
+}
